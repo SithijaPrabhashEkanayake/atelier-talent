@@ -39,27 +39,25 @@ export default function PortfolioManager() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  const fetchPortfolio = useCallback(async () => {
+  const fetchPortfolio = useCallback(async (isMountedRef) => {
     try {
       const response = await api.get('/profiles/me');
       if (response.data.data) {
         const portRes = await api.get(`/portfolio/${response.data.data._id}`);
-        setPortfolio(portRes.data.data || []);
+        if (isMountedRef.current) setPortfolio(portRes.data.data || []);
       }
     } catch (err) {
       console.error('Failed to load portfolio', err);
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    let isMounted = true;
-    if (isMounted) {
-      fetchPortfolio();
-    }
+    const isMountedRef = { current: true };
+    fetchPortfolio(isMountedRef);
     return () => {
-      isMounted = false;
+      isMountedRef.current = false;
     };
   }, [fetchPortfolio]);
 
