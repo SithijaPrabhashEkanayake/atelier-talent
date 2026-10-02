@@ -1,0 +1,75 @@
+# Required in your shell environment or a local .env file next to this
+# compose file (docker-compose auto-loads .env): JWT_SECRET,
+# MONGO_ROOT_PASSWORD, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY,
+# CLOUDINARY_API_SECRET. CLIENT_URL/NODE_ENV have sane local defaults below.
+#
+# Generate a JWT_SECRET with:  node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+
+services:
+  backend:
+    build:
+      context: ./backend
+    environment:
+      - PORT=5000
+      - NODE_ENV=${NODE_ENV:-production}
+      - MONGO_URI=mongodb://root:${MONGO_ROOT_PASSWORD:?Set MONGO_ROOT_PASSWORD in your environment or .env file}@mongo:27017/talent-marketplace?authSource=admin
+      - JWT_SECRET=${JWT_SECRET:?Set JWT_SECRET in your environment or .env file — do not use a default}
+      - JWT_EXPIRE=${JWT_EXPIRE:-15m}
+      - CLIENT_URL=${CLIENT_URL:-http://localhost}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      # Used to build the link inside password-reset emails — without this,
+      # every reset link points at localhost:5173 regardless of where the
+      # app is actually deployed. Default to CLIENT_URL's value since that's
+      # usually the same public origin.
+      - FRONTEND_URL=${FRONTEND_URL:-${CLIENT_URL:-http://localhost}}
+      # SMTP is optional — unset, password reset falls back to logging the
+      # link server-side instead of emailing it (see backend/utils/email.js).
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - SMTP_FROM=${SMTP_FROM:-}
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/api/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    # No host port published — only `frontend` (Nginx) is internet-facing.
+    # The backend is reachable by other services on the compose network at
+    # http://backend:5000. Uncomment below only for local debugging:
+    # ports:
+    #   - "5000:5000"
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  mongo:
+    image: mongo:6
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD:?Set MONGO_ROOT_PASSWORD in your environment or .env file}
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "-u", "root", "-p", "${MONGO_ROOT_PASSWORD}", "--authenticationDatabase", "admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    # No host port published — the database is reachable only from other
+    # containers on the compose network, never directly from the host.
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

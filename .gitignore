@@ -1,0 +1,29 @@
+# Secrets & Environment Configurations
+.env
+.env.*
+!.env.example
+*.env
+**/.env
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Production Builds
+dist/
+**/dist/
+build/
+**/build/
+
+# Logs & Temporary Files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+
+# Test Coverage & Binary Caches
+coverage/
+.cache/
+.turbo/

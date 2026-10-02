@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: talent-marketplace
+    runtime: node
+    plan: free
+    rootDir: talent-marketplace
+    # Builds the React app first, then installs backend deps. The backend
+    # serves the built frontend/dist directly (see server.js) so the whole
+    # app — UI, API, and Socket.io — runs as one free Render service on one
+    # origin. Splitting these into two services (e.g. a separate static
+    # site) breaks the sameSite:strict refresh cookie and CSRF double-submit
+    # cookie, which both require the frontend and API on the same origin.
+    buildCommand: cd frontend && npm ci && npm run build && cd ../backend && npm ci
+    startCommand: cd backend && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      # Same-origin deploy: CLIENT_URL should be this service's own Render
+      # URL (e.g. https://talent-marketplace.onrender.com) once known —
+      # CORS still needs it for cases where a request's Origin header is
+      # present even on a same-origin request.
+      - key: CLIENT_URL
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: REFRESH_TOKEN_SECRET
+        generateValue: true
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false

@@ -1,0 +1,11 @@
+node_modules/
+dist/
+dist-ssr/
+build/
+.env
+.env.*
+!.env.example
+*.log
+npm-debug.log*
+.DS_Store
+coverage/

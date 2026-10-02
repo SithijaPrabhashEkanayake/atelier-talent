@@ -1,0 +1,785 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@import 'tailwindcss';
+
+@theme {
+  /* Luxury fashion pairing (Cormorant Garamond display serif + Montserrat
+     body sans) — chosen for the Atelier brand over the prior Playfair
+     Display / Plus Jakarta Sans pairing. */
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-obsidian: #09090b;
+  --color-obsidian-light: #18181b;
+  --color-charcoal: #121316;
+  --color-gold: #d4af37;
+  --color-gold-light: #f5e7ba;
+  --color-champagne: #f4ebd0;
+  --color-couture-red: #e11d48;
+}
+
+/* Reduced motion — catches everything MotionConfig's reducedMotion="user"
+   doesn't reach: plain CSS transitions/keyframes (Tailwind's animate-pulse
+   etc., the custom @keyframes below, hover transitions). Collapsing
+   duration to near-zero rather than `animation: none` still lets opacity/
+   color end-states resolve (WCAG 2.3.3 "gentler, not zero") instead of
+   leaving elements stuck mid-animation. Left unlayered, same reasoning as
+   the light-theme overrides below — must beat Tailwind's own utility
+   layer regardless of selector order. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: #09090b;
+    color: #f4f4f5;
+    overflow-x: hidden;
+    selection-background-color: #d4af37;
+    selection-color: #09090b;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  ::selection {
+    background-color: #d4af37;
+    color: #09090b;
+  }
+}
+
+.bg-theme-base {
+  background-color: #09090b;
+}
+
+.text-theme-primary {
+  color: #f4f4f5;
+}
+
+/* Custom Editorial Utilities */
+.font-display {
+  font-family: var(--font-serif);
+}
+
+.font-mono-spec {
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+}
+
+.glass-nav {
+  background: rgba(9, 9, 11, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Used on horizontally-scrollable pill/chip rows (category filters, admin
+   tabs, the model carousel) to hide the scrollbar while keeping the row
+   scrollable — these classes were referenced across 4 components but never
+   actually defined anywhere, so the browser's default chunky scrollbar was
+   rendering unstyled under every one of those rows instead of being hidden. */
+.no-scrollbar,
+.scrollbar-none {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/legacy Edge */
+}
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, modern Edge */
+}
+
+.glass-dark {
+  background: rgba(18, 19, 22, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
+.glass-card-hover {
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), border-color 300ms ease-out, box-shadow 300ms ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .glass-card-hover:hover {
+    transform: translateY(-4px);
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 25px 50px -12px rgba(212, 175, 55, 0.15);
+  }
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #f5e7ba 45%, #d4af37 80%, #aa841e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.silver-gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Buttons */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.75rem;
+  background: linear-gradient(135deg, #d4af37 0%, #b89025 100%);
+  color: #09090b;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 9999px;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35);
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), background 200ms ease-out, box-shadow 200ms ease-out;
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-gold:hover {
+    background: linear-gradient(135deg, #e5c04b 0%, #c99e2e 100%);
+    box-shadow: 0 6px 28px rgba(212, 175, 55, 0.5);
+    transform: translateY(-1px);
+  }
+}
+
+.btn-gold:active {
+  transform: scale(0.97);
+  transition: transform 100ms ease-out;
+}
+
+.btn-ghost-luxury {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  backdrop-filter: blur(8px);
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), background 200ms ease-out, border-color 200ms ease-out;
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-ghost-luxury:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+}
+
+.btn-ghost-luxury:active {
+  transform: scale(0.97);
+  transition: transform 100ms ease-out;
+}
+
+/* Animations */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+/* ─── Enhanced Luxury Keyframe Animations ─── */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 5px rgba(212, 175, 55, 0.2),
+      0 0 15px rgba(212, 175, 55, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 15px rgba(212, 175, 55, 0.4),
+      0 0 40px rgba(212, 175, 55, 0.15);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes scale-in {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up-fade {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes rotate-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Shimmer overlay for loading states and gold accent bars */
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0) 0%,
+    rgba(212, 175, 55, 0.15) 50%,
+    rgba(212, 175, 55, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-up-fade {
+  animation: slide-up-fade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-rotate-slow {
+  animation: rotate-slow 20s linear infinite;
+}
+
+/* Gold border shimmer — animated border highlight */
+.border-gold-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.border-gold-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, transparent, rgba(212, 175, 55, 0.5), transparent) border-box;
+  mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  animation: gradient-shift 4s ease infinite;
+  background-size: 200% 200%;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Light Theme Overrides
+   The whole design system below was authored against a single dark
+   "Atelier" palette using Tailwind utilities directly (bg-zinc-950,
+   text-white, border-white/10, etc.) rather than semantic tokens, so
+   retrofitting a second theme means re-targeting those exact utility
+   classes instead of rewriting every component. These rules are
+   deliberately left outside any @layer block — Tailwind's own utilities
+   are emitted inside `@layer utilities`, and per the CSS cascade-layers
+   spec, any unlayered rule beats a layered one regardless of selector
+   order or specificity, so these overrides win without `!important`.
+   Scope is the highest-traffic, most-repeated patterns (verified via a
+   repo-wide grep before writing this) — status/accent colors (rose,
+   emerald, amber) are left untouched since they read fine on both
+   backgrounds and touching them risks breaking meaning (error/success
+   cues), not just look.
+   ═══════════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] body {
+  background-color: #faf8f3;
+  color: #18181b;
+}
+
+[data-theme='light'] .bg-theme-base {
+  background-color: #faf8f3;
+}
+
+[data-theme='light'] .text-theme-primary {
+  color: #18181b;
+}
+
+[data-theme='light'] ::-webkit-scrollbar-track {
+  background: #faf8f3;
+}
+
+[data-theme='light'] ::-webkit-scrollbar-thumb {
+  background: #d6d3cb;
+}
+
+[data-theme='light'] ::-webkit-scrollbar-thumb:hover {
+  background: #b8b4a8;
+}
+
+/* Page/section backgrounds */
+[data-theme='light'] .bg-\[\#09090b\],
+[data-theme='light'] .bg-zinc-950 {
+  background-color: #faf8f3;
+}
+
+[data-theme='light'] .bg-zinc-950\/80,
+[data-theme='light'] .bg-zinc-950\/70,
+[data-theme='light'] .bg-zinc-950\/60,
+[data-theme='light'] .bg-zinc-950\/50 {
+  background-color: rgba(250, 248, 243, 0.92);
+}
+
+[data-theme='light'] .bg-zinc-900,
+[data-theme='light'] .bg-zinc-900\/90,
+[data-theme='light'] .bg-zinc-900\/95,
+[data-theme='light'] .bg-zinc-900\/80,
+[data-theme='light'] .bg-zinc-900\/50,
+[data-theme='light'] .bg-zinc-900\/30 {
+  background-color: #ffffff;
+}
+
+[data-theme='light'] .bg-zinc-800,
+[data-theme='light'] .bg-zinc-800\/80 {
+  background-color: #f1efe9;
+}
+
+/* Additional near-black surface hexes used ad hoc alongside the
+   zinc-900/950 tokens (charcoal card panels, auth form backdrop, etc.) —
+   same treatment as bg-zinc-900: a white card surface. Several of these
+   are only ever used with an opacity suffix (e.g. bg-[#121316]/80), which
+   Tailwind compiles as a distinct class from the bare color — each
+   variant actually used in the codebase needs its own selector here. */
+[data-theme='light'] .bg-\[\#121316\],
+[data-theme='light'] .bg-\[\#121316\]\/80,
+[data-theme='light'] .bg-\[\#0e0e12\],
+[data-theme='light'] .bg-\[\#0d0e12\],
+[data-theme='light'] .bg-\[\#0d0e12\]\/80,
+[data-theme='light'] .bg-\[\#0d0e12\]\/95,
+[data-theme='light'] .bg-\[\#0e0e11\] {
+  background-color: #ffffff;
+}
+
+[data-theme='light'] .border-\[\#09090b\] {
+  border-color: #faf8f3;
+}
+
+[data-theme='light'] .border-white,
+[data-theme='light'] .border-white\/15,
+[data-theme='light'] .border-white\/20,
+[data-theme='light'] .border-white\/30 {
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme='light'] .text-zinc-200 {
+  color: #3f3f46;
+}
+
+/* NotFound's giant "404" watermark: a from-gold/30-to-transparent
+   gradient clipped to the text, tuned to read as a faint ghost mark
+   against the dark theme's near-black page background. At the same low
+   opacity it nearly disappears against the light theme's near-white
+   background — richen just the `from` stop so it stays visible as a
+   watermark rather than vanishing outright. Only --tw-gradient-from is
+   overridden here (matching the plain-color shape Tailwind v4 itself
+   generates for this utility) — reconstructing the rest of the
+   --tw-gradient-stops chain by hand breaks the gradient direction/position
+   Tailwind wires up separately via bg-gradient-to-b. */
+[data-theme='light'] .from-\[\#d4af37\]\/30 {
+  --tw-gradient-from: rgba(180, 140, 30, 0.55);
+}
+
+/* Shared glass/card surfaces */
+[data-theme='light'] .glass-nav {
+  background: rgba(250, 248, 243, 0.85);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .glass-dark {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .btn-ghost-luxury {
+  background: rgba(0, 0, 0, 0.03);
+  color: #18181b;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .btn-ghost-luxury:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='light'] .gold-gradient-text {
+  background: linear-gradient(135deg, #7a5f12 0%, #aa841e 45%, #d4af37 80%, #b8942f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Translucent white overlays (subtle fills/borders on dark surfaces)
+   become translucent black on light surfaces. Several of these use an
+   arbitrary-precision opacity (e.g. bg-white/[0.04]) rather than one of
+   Tailwind's standard steps — each distinct value used in the codebase
+   compiles to its own class and needs its own selector here. */
+[data-theme='light'] .bg-white\/5,
+[data-theme='light'] .bg-white\/\[0\.02\],
+[data-theme='light'] .bg-white\/\[0\.03\],
+[data-theme='light'] .bg-white\/\[0\.04\] {
+  background-color: rgba(0, 0, 0, 0.035);
+}
+
+[data-theme='light'] .bg-white\/\[0\.06\],
+[data-theme='light'] .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .border-white\/5,
+[data-theme='light'] .border-white\/\[0\.04\],
+[data-theme='light'] .border-white\/\[0\.06\] {
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .border-white\/\[0\.08\],
+[data-theme='light'] .border-white\/\[0\.12\] {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .ring-white\/\[0\.03\] {
+  --tw-ring-color: rgba(0, 0, 0, 0.035);
+}
+
+/* Keyboard-focus indicators: the gold accent (#d4af37) was tuned against
+   dark surfaces, where even a translucent ring reads clearly. On a white
+   or near-white input in light mode the same ring (especially at 30-40%
+   opacity) drops well below the 3:1 contrast WCAG wants for focus
+   indicators. Swap in a darker bronze at high opacity instead of the
+   literal gold — same hue family as .gold-gradient-text's light variant,
+   just strong enough to stay visible on light input surfaces. */
+[data-theme='light'] .focus\:ring-\[\#d4af37\]:focus,
+[data-theme='light'] .focus\:ring-\[\#d4af37\]\/40:focus {
+  --tw-ring-color: rgba(122, 95, 18, 0.85);
+}
+
+[data-theme='light'] .focus\:border-\[\#d4af37\]:focus,
+[data-theme='light'] .focus\:border-\[\#d4af37\]\/30:focus {
+  border-color: #7a5f12;
+}
+
+/* Same problem, different focus treatment: TalentSearch/PortfolioManager
+   filter inputs use Tailwind's stock amber-400 (#fbbf24) as a border-only
+   focus indicator with no ring. It's already too light for 3:1 against a
+   dark surface's border; against a light-mode input it's nearly invisible. */
+[data-theme='light'] .focus\:border-amber-400:focus {
+  border-color: #7a5f12;
+}
+
+/* AdminDashboard's filter-select wrappers indicate focus on the pill div
+   (:focus-within) rather than the transparent <select> itself — same
+   contrast problem, different pseudo-class than the :focus rule above. */
+[data-theme='light'] .focus-within\:ring-\[\#d4af37\]\/40:focus-within {
+  --tw-ring-color: rgba(122, 95, 18, 0.85);
+}
+
+/* Dark decorative gradients (section backgrounds, edge-fade vignettes,
+   placeholder-card fills) outside any theme-invariant/photo-scrim context.
+   Unlike solid bg-* utilities, from-/via-/to-* gradient-stop utilities set
+   separate --tw-gradient-* custom properties Tailwind's gradient formula
+   reads from — overriding background-color does nothing to them, so each
+   stop color actually used in a non-invariant gradient needs its own rule
+   here. Page-level gradients (blending into the cream page background)
+   get #faf8f3; card-level gradients (sitting on a white card surface,
+   e.g. inside a modal) get #ffffff. */
+[data-theme='light'] .from-\[\#09090b\] {
+  --tw-gradient-from: #faf8f3;
+}
+[data-theme='light'] .via-zinc-950 {
+  --tw-gradient-via: #faf8f3;
+}
+[data-theme='light'] .to-black {
+  --tw-gradient-to: #faf8f3;
+}
+[data-theme='light'] .via-zinc-950.to-zinc-950 {
+  --tw-gradient-via: #ffffff;
+  --tw-gradient-to: #ffffff;
+}
+[data-theme='light'] .from-zinc-900.to-zinc-900 {
+  --tw-gradient-from: #ffffff;
+  --tw-gradient-to: #ffffff;
+}
+[data-theme='light'] .from-zinc-900.via-zinc-950.to-zinc-900 {
+  --tw-gradient-via: #f1efe9;
+}
+
+[data-theme='light'] .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Body text */
+[data-theme='light'] .text-white {
+  color: #18181b;
+}
+
+[data-theme='light'] .text-zinc-100 {
+  color: #27272a;
+}
+
+[data-theme='light'] .text-zinc-200,
+[data-theme='light'] .text-zinc-300 {
+  color: #3f3f46;
+}
+
+[data-theme='light'] .text-zinc-400 {
+  color: #52525b;
+}
+
+[data-theme='light'] .text-zinc-500 {
+  color: #71717a;
+}
+
+/* Theme-invariant sections — full-bleed photo/video heroes that carry
+   their own dark gradient scrim for text legibility against the image,
+   independent of the site's light/dark theme (the same way a light-themed
+   marketing site still uses a dark overlay on a hero photo). Mark the
+   section root with `theme-invariant` and every light-theme override
+   above is reset back to its original dark-theme value within it —
+   these counter-rules are more specific (extra .theme-invariant class)
+   so they win over the plain `[data-theme='light'] .foo` rules above. */
+[data-theme='light'] .theme-invariant.bg-\[\#09090b\],
+[data-theme='light'] .theme-invariant .bg-\[\#09090b\],
+[data-theme='light'] .theme-invariant.bg-zinc-950,
+[data-theme='light'] .theme-invariant .bg-zinc-950 {
+  background-color: #09090b;
+}
+
+[data-theme='light'] .theme-invariant .text-white {
+  color: #ffffff;
+}
+
+[data-theme='light'] .theme-invariant .text-zinc-100 {
+  color: #f4f4f5;
+}
+
+[data-theme='light'] .theme-invariant .text-zinc-200,
+[data-theme='light'] .theme-invariant .text-zinc-300 {
+  color: #d4d4d8;
+}
+
+[data-theme='light'] .theme-invariant .text-zinc-400 {
+  color: #a1a1aa;
+}
+
+[data-theme='light'] .theme-invariant .text-zinc-500 {
+  color: #71717a;
+}
+
+[data-theme='light'] .theme-invariant .border-white\/10,
+[data-theme='light'] .theme-invariant .border-white,
+[data-theme='light'] .theme-invariant .border-white\/15,
+[data-theme='light'] .theme-invariant .border-white\/20,
+[data-theme='light'] .theme-invariant .border-white\/30 {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme='light'] .theme-invariant .border-white\/5 {
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='light'] .theme-invariant .bg-white\/5,
+[data-theme='light'] .theme-invariant .bg-white\/\[0\.02\] {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='light'] .theme-invariant .bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='light'] .theme-invariant .bg-white\/\[0\.03\],
+[data-theme='light'] .theme-invariant .bg-white\/\[0\.04\] {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme='light'] .theme-invariant .bg-white\/\[0\.06\] {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='light'] .theme-invariant .border-white\/\[0\.04\],
+[data-theme='light'] .theme-invariant .border-white\/\[0\.06\] {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='light'] .theme-invariant .border-white\/\[0\.08\],
+[data-theme='light'] .theme-invariant .border-white\/\[0\.12\] {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='light'] .theme-invariant .ring-white\/\[0\.03\] {
+  --tw-ring-color: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme='light'] .theme-invariant .bg-\[\#121316\],
+[data-theme='light'] .theme-invariant .bg-\[\#121316\]\/80,
+[data-theme='light'] .theme-invariant .bg-\[\#0e0e12\],
+[data-theme='light'] .theme-invariant .bg-\[\#0d0e12\],
+[data-theme='light'] .theme-invariant .bg-\[\#0d0e12\]\/80,
+[data-theme='light'] .theme-invariant .bg-\[\#0d0e12\]\/95,
+[data-theme='light'] .theme-invariant .bg-\[\#0e0e11\] {
+  background-color: #121316;
+}
+
+[data-theme='light'] .theme-invariant .border-\[\#09090b\] {
+  border-color: #09090b;
+}
+
+/* Reset the gradient-stop overrides below back to their native dark
+   values inside theme-invariant sections (VideoHero, ParallaxBanner,
+   PublicProfile's cover banner) — these are photo scrims that must stay
+   dark for legibility regardless of site theme. */
+[data-theme='light'] .theme-invariant .from-\[\#09090b\] {
+  --tw-gradient-from: #09090b;
+}
+[data-theme='light'] .theme-invariant .via-zinc-950 {
+  --tw-gradient-via: #09090b;
+}
+[data-theme='light'] .theme-invariant .to-black {
+  --tw-gradient-to: #000000;
+}
+
+/* .glass-dark and .btn-ghost-luxury are custom component classes (not
+   Tailwind utilities) with their own light-theme rules above — reset
+   those back to their original dark-mode CSS within theme-invariant
+   sections the same way the utility classes above are reset. */
+[data-theme='light'] .theme-invariant .glass-dark {
+  background: rgba(18, 19, 22, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme='light'] .theme-invariant .btn-ghost-luxury {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+[data-theme='light'] .theme-invariant .btn-ghost-luxury:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme='light'] .theme-invariant .gold-gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #f5e7ba 45%, #d4af37 80%, #aa841e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Staggered animation delay utilities */
+.stagger-1 {
+  animation-delay: 0.05s;
+}
+.stagger-2 {
+  animation-delay: 0.1s;
+}
+.stagger-3 {
+  animation-delay: 0.15s;
+}
+.stagger-4 {
+  animation-delay: 0.2s;
+}
+.stagger-5 {
+  animation-delay: 0.25s;
+}
+.stagger-6 {
+  animation-delay: 0.3s;
+}
