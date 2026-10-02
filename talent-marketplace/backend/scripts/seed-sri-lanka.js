@@ -36,7 +36,23 @@ const COUNT_PER_ROLE = parseInt(process.argv[2], 10) || 100;
 const EMAIL_SUFFIX = '@sl.demo.talent';
 const PASSWORD = 'Password123';
 
-const img = (seed, size = 600) => `https://i.pravatar.cc/${size}?u=sl-${seed}`;
+// i.pravatar.cc's `u=` hash picks a photo with zero regard for gender, so a
+// seed derived from a model's name/index could (and did — see the female
+// names showing up with male stock photos in the live demo data) land on a
+// photo that doesn't match. xsgames.co/randomusers is the underlying asset
+// set pravatar itself draws from, but exposed here split into separate
+// male/ and female/ folders (indices 0-78 each) — hash the seed into that
+// range so the photo is still deterministic per-profile, but gender-correct.
+function hashToIndex(str, mod) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+  }
+  return hash % mod;
+}
+const AVATAR_POOL_SIZE = 79;
+const img = (isFemale, seed) =>
+  `https://xsgames.co/randomusers/assets/avatars/${isFemale ? 'female' : 'male'}/${hashToIndex(seed, AVATAR_POOL_SIZE)}.jpg`;
 
 // ---------------------------------------------------------------------------
 // Name pools (fictional combinatorics, not real individuals)
@@ -250,8 +266,11 @@ const seedSL = async () => {
           modelProfileId: profile._id,
           type: 'photo',
           category: [modelMeta[i].category, 'headshot', 'commercial'][k % 3],
-          mediaUrl: img(`${modelMeta[i].seed}-${k}`, 800),
-          thumbnailUrl: img(`${modelMeta[i].seed}-${k}`, 400),
+          // Same seed for both — xsgames.co serves one fixed 256x256 asset
+          // per index (no on-the-fly resizing like pravatar had), so the
+          // "thumbnail" is just the same photo rather than a smaller render.
+          mediaUrl: img(modelMeta[i].isFemale, `${modelMeta[i].seed}-${k}`),
+          thumbnailUrl: img(modelMeta[i].isFemale, `${modelMeta[i].seed}-${k}`),
           fileSizeBytes: 200000 + k * 15000,
           sortOrder: k,
         });

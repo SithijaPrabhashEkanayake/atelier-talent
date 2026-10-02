@@ -19,7 +19,7 @@ app.set('trust proxy', 1);
 // Middleware
 // Explicit CSP directives — helmet's default img-src ('self' data:) blocks
 // every portfolio photo, since those are hotlinked from Cloudinary (real
-// uploads) or i.pravatar.cc/images.unsplash.com (seed/demo data); its
+// uploads) or xsgames.co/images.unsplash.com (seed/demo data); its
 // default style-src also blocks the Google Fonts @import in index.css.
 // This mirrors frontend/nginx.conf's CSP header, which the Docker/Nginx
 // deployment path already uses — kept in sync so both hosting paths

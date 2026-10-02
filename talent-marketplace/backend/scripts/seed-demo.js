@@ -41,12 +41,23 @@ if (process.env.NODE_ENV === 'production') {
 const DEMO_EMAIL_SUFFIX = '@demo.talent';
 const DEMO_PASSWORD = 'Password123'; // meets the 8+ char, letter+number policy
 
-// i.pravatar.cc returns a deterministic (per `u` value), realistic-looking
-// headshot-style photo — a much better fit for a talent/model directory
-// than picsum.photos' random landscapes/objects. Square only (no aspect
-// ratio control), which is fine for portfolio thumbnails and matches the
-// square showcase grid on the homepage.
-const img = (seed, size = 600) => `https://i.pravatar.cc/${size}?u=${seed}`;
+// i.pravatar.cc's `u=` hash picks a photo with zero regard for gender, so a
+// name-derived seed could (and did — see the female names showing up with
+// male stock photos in the live demo data) land on a mismatched photo.
+// xsgames.co/randomusers is the underlying asset set pravatar itself draws
+// from, but exposed here split into separate male/ and female/ folders
+// (indices 0-78 each) — hash the seed into that range so the photo is still
+// deterministic per-profile, but gender-correct.
+function hashToIndex(str, mod) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+  }
+  return hash % mod;
+}
+const AVATAR_POOL_SIZE = 79;
+const img = (isFemale, seed) =>
+  `https://xsgames.co/randomusers/assets/avatars/${isFemale ? 'female' : 'male'}/${hashToIndex(seed, AVATAR_POOL_SIZE)}.jpg`;
 
 const MODELS = [
   {
@@ -61,6 +72,7 @@ const MODELS = [
     exp: 4,
     verified: true,
     seed: 'amara',
+    isFemale: true,
   },
   {
     fullName: 'Ishara Perera',
@@ -73,6 +85,7 @@ const MODELS = [
     exp: 1,
     verified: false,
     seed: 'ishara',
+    isFemale: true,
   },
   {
     fullName: 'Nadia Fernando',
@@ -86,6 +99,7 @@ const MODELS = [
     exp: 6,
     verified: true,
     seed: 'nadia',
+    isFemale: true,
   },
   {
     fullName: 'Priya Jayasuriya',
@@ -98,6 +112,7 @@ const MODELS = [
     exp: 2,
     verified: false,
     seed: 'priya',
+    isFemale: true,
   },
   {
     fullName: 'Zara Khan',
@@ -111,6 +126,7 @@ const MODELS = [
     exp: 5,
     verified: true,
     seed: 'zara',
+    isFemale: true,
   },
   {
     fullName: 'Liyana Rahman',
@@ -123,6 +139,7 @@ const MODELS = [
     exp: 0,
     verified: false,
     seed: 'liyana',
+    isFemale: true,
   },
   {
     fullName: 'Kavindu De Silva',
@@ -135,6 +152,7 @@ const MODELS = [
     exp: 3,
     verified: false,
     seed: 'kavindu',
+    isFemale: false,
   },
   {
     fullName: 'Sasha Wright',
@@ -148,6 +166,7 @@ const MODELS = [
     exp: 7,
     verified: true,
     seed: 'sasha',
+    isFemale: true,
   },
 ];
 
@@ -395,8 +414,11 @@ const seedDB = async () => {
           modelProfileId: profile._id,
           type: 'photo',
           category: [m.category, 'headshot', 'commercial'][k % 3],
-          mediaUrl: img(`${m.seed}-${k}`, 800),
-          thumbnailUrl: img(`${m.seed}-${k}`, 400),
+          // Same seed for both — xsgames.co serves one fixed 256x256 asset
+          // per index (no on-the-fly resizing like pravatar had), so the
+          // "thumbnail" is just the same photo rather than a smaller render.
+          mediaUrl: img(m.isFemale, `${m.seed}-${k}`),
+          thumbnailUrl: img(m.isFemale, `${m.seed}-${k}`),
           fileSizeBytes: 240000 + k * 10000,
           sortOrder: k,
         });
