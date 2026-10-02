@@ -50,22 +50,22 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link to="/castings" className="hover:text-amber-300 transition-colors">
+                <Link to="/search" className="hover:text-amber-300 transition-colors">
                   Runway Models
                 </Link>
               </li>
               <li>
-                <Link to="/castings" className="hover:text-amber-300 transition-colors">
+                <Link to="/search" className="hover:text-amber-300 transition-colors">
                   Editorial Fashion
                 </Link>
               </li>
               <li>
-                <Link to="/castings" className="hover:text-amber-300 transition-colors">
+                <Link to="/search" className="hover:text-amber-300 transition-colors">
                   Commercial & Print
                 </Link>
               </li>
               <li>
-                <Link to="/castings" className="hover:text-amber-300 transition-colors">
+                <Link to="/search" className="hover:text-amber-300 transition-colors">
                   Pageant Titleholders
                 </Link>
               </li>

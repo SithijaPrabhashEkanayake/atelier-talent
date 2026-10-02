@@ -218,7 +218,9 @@ export default function TalentSearch() {
   const lightboxItems = results.map((p) => ({
     url: p.thumbnailUrl || p.photoUrl,
     title: `${p.fullName} — ${p.category?.toUpperCase() || 'TALENT'}`,
-    caption: `${p.country || 'International'} • Height: ${p.heightCm || 178} cm • Eyes: ${p.eyeColor || 'Brown'}`,
+    caption: [p.country || 'International', p.heightCm ? `Height: ${p.heightCm} cm` : null]
+      .filter(Boolean)
+      .join(' • '),
   }));
 
   return (

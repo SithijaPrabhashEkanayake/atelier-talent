@@ -284,7 +284,7 @@ export default function CompareDock() {
                       <div className="flex gap-6 text-right">
                         {selectedTalents.map((t, idx) => (
                           <span key={idx} className="font-bold text-white min-w-[60px]">
-                            {t.heightCm || 178} cm
+                            {t.heightCm ? `${t.heightCm} cm` : '—'}
                           </span>
                         ))}
                       </div>
@@ -297,18 +297,7 @@ export default function CompareDock() {
                           <span key={idx} className="font-bold text-white min-w-[60px]">
                             {t.measurements?.bust && t.measurements?.waist && t.measurements?.hips
                               ? `${t.measurements.bust}-${t.measurements.waist}-${t.measurements.hips}`
-                              : '86-60-89'}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between items-center py-1.5 border-b border-white/5 text-zinc-400">
-                      <span className="text-[11px] uppercase tracking-wider">Eye Color</span>
-                      <div className="flex gap-6 text-right">
-                        {selectedTalents.map((t, idx) => (
-                          <span key={idx} className="text-zinc-300 min-w-[60px]">
-                            {t.eyeColor || 'Brown'}
+                              : '—'}
                           </span>
                         ))}
                       </div>

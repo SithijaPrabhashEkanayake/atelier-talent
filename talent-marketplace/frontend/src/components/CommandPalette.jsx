@@ -70,7 +70,7 @@ const QUICK_ACTIONS = [
   {
     id: 'a1',
     title: 'Talent Scout Directory',
-    subtitle: 'Search 48+ verified models with measurement filters',
+    subtitle: 'Search verified models with measurement filters',
     icon: Compass,
     link: '/search',
   },

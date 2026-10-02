@@ -93,11 +93,11 @@ export default function CompCard({ model, index = 0 }) {
 
         {/* Hover Reveal: Editorial Measurements Drawer */}
         <div className="absolute inset-x-0 bottom-0 p-4 translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 bg-gradient-to-t from-black via-black/90 to-transparent z-20">
-          <div className="grid grid-cols-3 gap-2 text-center text-zinc-300 py-2 border-t border-white/10 font-mono text-xs">
+          <div className="grid grid-cols-2 gap-2 text-center text-zinc-300 py-2 border-t border-white/10 font-mono text-xs">
             <div>
               <span className="block text-[9px] text-zinc-400 uppercase">Height</span>
               <span className="font-semibold text-white">
-                {model.heightCm ? `${model.heightCm} cm` : '178 cm'}
+                {model.heightCm ? `${model.heightCm} cm` : '—'}
               </span>
             </div>
             <div>
@@ -105,12 +105,8 @@ export default function CompCard({ model, index = 0 }) {
               <span className="font-semibold text-white">
                 {model.measurements?.bust && model.measurements?.waist && model.measurements?.hips
                   ? `${model.measurements.bust}-${model.measurements.waist}-${model.measurements.hips}`
-                  : '86-61-89'}
+                  : '—'}
               </span>
-            </div>
-            <div>
-              <span className="block text-[9px] text-zinc-400 uppercase">Eyes</span>
-              <span className="font-semibold text-white">{model.eyeColor || 'Brown'}</span>
             </div>
           </div>
         </div>

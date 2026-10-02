@@ -184,7 +184,7 @@ exports.getPublicShowcase = async (req, res) => {
     const profiles = await ModelProfile.find({ isPublished: true })
       .sort({ isVerified: -1, createdAt: -1 })
       .limit(8)
-      .select('fullName country category isVerified');
+      .select('fullName country category isVerified heightCm measurements');
 
     const withThumbnails = await Promise.all(
       profiles.map(async (p) => {
@@ -195,6 +195,8 @@ exports.getPublicShowcase = async (req, res) => {
           country: p.country,
           category: p.category,
           isVerified: p.isVerified,
+          heightCm: p.heightCm,
+          measurements: p.measurements,
           thumbnailUrl: item?.thumbnailUrl || null,
         };
       }),
