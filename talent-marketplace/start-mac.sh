@@ -102,20 +102,22 @@ if command -v lsof &> /dev/null; then
 fi
 
 # 5. Auto-configure backend/.env if missing
+# Never hardcode real credentials here — this script is committed to git.
+# Generate a fresh random JWT secret and leave MONGO_URI/Cloudinary as
+# placeholders the user must fill in (or point at the local dev-mongo.js
+# instance — see backend/README / MAC_SETUP.md).
 if [ ! -f "backend/.env" ]; then
-    echo "⚙️ Creating backend/.env with working Atlas connection..."
-    cat << EOF > backend/.env
-PORT=$BACKEND_PORT
-MONGO_URI=mongodb+srv://sandun_admin:Password123!@cluster0.5n85pkw.mongodb.net/talent-marketplace?retryWrites=true&w=majority&appName=Cluster0
-JWT_SECRET=super_secret_jwt_key_change_me_in_production
-JWT_EXPIRE=15m
-CLIENT_URL=http://localhost:5173
-
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=nketqopf
-CLOUDINARY_API_KEY=626828894872575
-CLOUDINARY_API_SECRET=0hUf0VoYt-V0aVBXuL4mGoUU9GQ
-EOF
+    echo "⚙️ Creating backend/.env from the example template..."
+    cp backend/.env.example backend/.env
+    GENERATED_JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(48).toString('hex'))")
+    sed -i.bak "s#^PORT=.*#PORT=$BACKEND_PORT#" backend/.env
+    sed -i.bak "s#^JWT_SECRET=.*#JWT_SECRET=$GENERATED_JWT_SECRET#" backend/.env
+    rm -f backend/.env.bak
+    echo "⚠️  backend/.env created with a generated JWT_SECRET but PLACEHOLDER"
+    echo "    MONGO_URI and Cloudinary values. Edit backend/.env and fill in:"
+    echo "      - MONGO_URI (your MongoDB Atlas URI, or run"
+    echo "        'node backend/scripts/dev-mongo.js' for a disposable local DB)"
+    echo "      - CLOUDINARY_CLOUD_NAME / CLOUDINARY_API_KEY / CLOUDINARY_API_SECRET"
 fi
 
 # 6. Launch Backend and Frontend in parallel

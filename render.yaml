@@ -14,8 +14,13 @@ services:
         value: 5000
       - key: CLIENT_URL
         value: https://atelier-talent.onrender.com
+      # MONGO_URI and the Cloudinary keys are real credentials — never commit
+      # them. Set these in the Render dashboard (Environment tab) instead;
+      # `sync: false` tells Render to expect a manually-set value and leave
+      # it alone on redeploys. See talent-marketplace/README.md's "Free
+      # Hosting" section for the one-time setup steps.
       - key: MONGO_URI
-        value: mongodb+srv://sandun_admin:Password123%21@cluster0.5n85pkw.mongodb.net/talent-marketplace?retryWrites=true&w=majority&appName=Cluster0
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRE
@@ -23,8 +28,8 @@ services:
       - key: REFRESH_TOKEN_SECRET
         generateValue: true
       - key: CLOUDINARY_CLOUD_NAME
-        value: nketqopf
+        sync: false
       - key: CLOUDINARY_API_KEY
-        value: "626828894872575"
+        sync: false
       - key: CLOUDINARY_API_SECRET
-        value: 0hUf0VoYt-V0aVBXuL4mGoUU9GQ
+        sync: false
