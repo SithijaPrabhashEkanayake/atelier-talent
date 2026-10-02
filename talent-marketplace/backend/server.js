@@ -147,6 +147,18 @@ const server = http.createServer(app);
 // Initialize Socket.io
 initSocket(server);
 
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n❌ [PORT IN USE] Port ${PORT} is already occupied by another process.`);
+    console.error(`💡 Tip for macOS users: macOS AirPlay Receiver listens on port 5000 by default.`);
+    console.error(`   To free port 5000: System Settings > General > AirDrop & AirPlay > Turn OFF 'AirPlay Receiver'.`);
+    console.error(`   Alternatively, run on an alternate port: PORT=5001 npm run dev\n`);
+  } else {
+    console.error('Server error:', err);
+  }
+  process.exit(1);
+});
+
 if (process.env.NODE_ENV !== 'test') {
   server.listen(PORT, () => {
     console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);

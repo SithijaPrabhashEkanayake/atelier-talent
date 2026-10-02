@@ -1,0 +1,29 @@
+# Cross-Platform Line Ending Normalization (macOS, Linux, Windows)
+* text=auto eol=lf
+
+# Explicit LF for Unix shell scripts & web assets
+*.sh text eol=lf
+*.bash text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# Windows command scripts retain CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary formats
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.pptx binary
+*.ico binary
+*.webp binary
+*.svg text
