@@ -16,7 +16,11 @@ const protect = async (req, res, next) => {
   try {
     // Verify token — pin the algorithm explicitly so a token signed (or
     // forged) with a different/downgraded algorithm is never accepted.
-    const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'super_secret_jwt_key_change_me_in_production',
+      { algorithms: ['HS256'] },
+    );
 
     const user = await User.findById(decoded.id);
 

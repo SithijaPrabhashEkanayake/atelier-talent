@@ -4,12 +4,6 @@ services:
     runtime: node
     plan: free
     rootDir: talent-marketplace
-    # Builds the React app first, then installs backend deps. The backend
-    # serves the built frontend/dist directly (see server.js) so the whole
-    # app — UI, API, and Socket.io — runs as one free Render service on one
-    # origin. Splitting these into two services (e.g. a separate static
-    # site) breaks the sameSite:strict refresh cookie and CSRF double-submit
-    # cookie, which both require the frontend and API on the same origin.
     buildCommand: cd frontend && npm install && npm run build && cd ../backend && (npm ci --omit=dev || npm install --omit=dev)
     startCommand: cd backend && npm start
     healthCheckPath: /api/health
@@ -19,16 +13,18 @@ services:
       - key: PORT
         value: 5000
       - key: CLIENT_URL
-        sync: false
+        value: https://atelier-talent.onrender.com
       - key: MONGO_URI
-        sync: false
+        value: mongodb+srv://sandun_admin:Password123%21@cluster0.5n85pkw.mongodb.net/talent-marketplace?retryWrites=true&w=majority&appName=Cluster0
       - key: JWT_SECRET
         generateValue: true
+      - key: JWT_EXPIRE
+        value: 15m
       - key: REFRESH_TOKEN_SECRET
         generateValue: true
       - key: CLOUDINARY_CLOUD_NAME
-        sync: false
+        value: nketqopf
       - key: CLOUDINARY_API_KEY
-        sync: false
+        value: "626828894872575"
       - key: CLOUDINARY_API_SECRET
-        sync: false
+        value: 0hUf0VoYt-V0aVBXuL4mGoUU9GQ

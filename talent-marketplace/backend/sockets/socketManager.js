@@ -23,7 +23,11 @@ const initSocket = (server) => {
         socket.handshake.headers?.authorization?.replace('Bearer ', '');
       if (!token) return next(new Error('Authentication error: Token required'));
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || 'super_secret_jwt_key_change_me_in_production',
+        { algorithms: ['HS256'] },
+      );
       socket.user = decoded;
       next();
     } catch (err) {
