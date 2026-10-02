@@ -106,7 +106,7 @@ if [ ! -f "backend/.env" ]; then
     echo "⚙️ Creating backend/.env with working Atlas connection..."
     cat << EOF > backend/.env
 PORT=$BACKEND_PORT
-MONGO_URI=mongodb+srv://methmalmanisha1_db_user:DTkqOkm7fW8zf1QH@cluster0.kxn9a0y.mongodb.net/talent-marketplace?retryWrites=true&w=majority&appName=Cluster0
+MONGO_URI=mongodb+srv://sandun_admin:Password123!@cluster0.5n85pkw.mongodb.net/talent-marketplace?retryWrites=true&w=majority&appName=Cluster0
 JWT_SECRET=super_secret_jwt_key_change_me_in_production
 JWT_EXPIRE=15m
 CLIENT_URL=http://localhost:5173
