@@ -24,11 +24,29 @@ export const setAccessToken = (token) => {
   accessToken = token;
 };
 
-// Request interceptor to add the access token to headers
+// Read the readable (non-httpOnly) XSRF-TOKEN cookie the backend's
+// double-submit CSRF middleware sets (backend/middleware/csrfMiddleware.js).
+// It's set on any GET and must be echoed back as a header on every
+// state-mutating request or the backend rejects it with 403
+// CSRF_VALIDATION_FAILED.
+const getCsrfCookie = () => {
+  const match = document.cookie.match(/(?:^|; )XSRF-TOKEN=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : null;
+};
+
+const SAFE_METHODS = new Set(['get', 'head', 'options']);
+
+// Request interceptor to add the access token and CSRF header
 api.interceptors.request.use(
   (config) => {
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    if (!SAFE_METHODS.has((config.method || 'get').toLowerCase())) {
+      const csrfToken = getCsrfCookie();
+      if (csrfToken) {
+        config.headers['X-XSRF-TOKEN'] = csrfToken;
+      }
     }
     return config;
   },
