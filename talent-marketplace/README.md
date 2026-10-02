@@ -18,11 +18,11 @@ Built as a BSc (Hons) Software Engineering capstone project at NSBM Green Univer
 | **Supervisor** | Ms. Lakni Peiris |
 | **Submission period** | September 2026 |
 | **Research approach** | Design and Development Research (DDR) with an Agile, sprint-based build (4 monthly sprints) |
-| **Repository** | `<add GitHub repository URL>` |
-| **Live demo (free hosting)** | `<add Render URL after deploying — see Free Hosting>` |
+| **Repository** | [github.com/SithijaPrabhashEkanayake/atelier-talent](https://github.com/SithijaPrabhashEkanayake/atelier-talent) |
+| **Live demo (free hosting)** | [atelier-talent.onrender.com](https://atelier-talent.onrender.com/) |
 | **Candidate contact** | `<add university email>` |
 
-> Fill in the three `<...>` placeholders before submitting. Everything else above is taken from the project's own documents in `Docs/`.
+> Fill in the candidate contact placeholder before submitting. Everything else above is taken from the project's own documents in `Docs/`.
 
 ### Problem, aim and scope (summary)
 - **Problem:** Fashion, media and pageant recruitment still relies on unverified social-media DMs, agency lock-in and manual portfolio review, which creates a trust gap, slow casting cycles and little access for independent talent.
