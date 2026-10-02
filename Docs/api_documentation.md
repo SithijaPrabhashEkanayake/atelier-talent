@@ -5,7 +5,7 @@
 **Supervisor:** Ms. Lakni Peiris  
 **Document Version:** 2.0  
 **Base URL (Local):** `http://localhost:5000/api`  
-**Base URL (Production):** `https://talent-marketplace-api.onrender.com/api`
+**Base URL (Production):** `https://atelier-talent.onrender.com/api`
 
 ---
 

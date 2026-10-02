@@ -191,7 +191,7 @@ P0-T7 (PRD) → P0-T8 (SRS) → M0
    → P5-T1..T5 (Docs+Submission) → M5
 ```
 
-Within Phase 2, the RBAC/Auth block (Sprint Block 1) is the single hardest dependency: every subsequent module's endpoints require the auth/RBAC middleware to exist first, so any slippage in Sprint Block 1 directly delays all of Phase 2 — this is the schedule's primary risk concentration (see Risk Register, forthcoming document, for likelihood/impact scoring).
+Within Phase 2, the RBAC/Auth block (Sprint Block 1) is the single hardest dependency: every subsequent module's endpoints require the auth/RBAC middleware to exist first, so any slippage in Sprint Block 1 directly delays all of Phase 2 — this is the schedule's primary risk concentration (see `Risk_Register.md` for likelihood/impact scoring).
 
 ---
 

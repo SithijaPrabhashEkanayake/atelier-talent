@@ -9,10 +9,10 @@
 | **Document Version** | 2.0 |
 | **Status** | Active — Approved for Build |
 | **API Version** | v1 |
-| **Base URL (Production/Pilot)** | `https://api.talentmarketplace.live/api/v1` |
-| **Base URL (Staging)** | `https://talent-marketplace-staging.onrender.com/api/v1` |
-| **WebSocket URL (Production)** | `wss://api.talentmarketplace.live` |
-| **WebSocket URL (Staging)** | `wss://talent-marketplace-staging.onrender.com` |
+| **Base URL (Production/Pilot)** | `https://atelier-talent.onrender.com/api` |
+| **Base URL (Staging)** | Not applicable — the free-hosting setup runs one Render service for demo/pilot use; see `README.md`'s "Free Hosting" section. |
+| **WebSocket URL (Production)** | `wss://atelier-talent.onrender.com` |
+| **WebSocket URL (Staging)** | Not applicable (see Base URL above) |
 | **Companion Documents** | PRD v2.0, SRS v2.0, System Architecture Design Document v2.0, Database Design Document v2.0 |
 
 ---
@@ -48,7 +48,7 @@ This document specifies the complete REST API contract for the Global Multidimen
 ## 2. General API Conventions
 
 ### 2.1 Base URL and Versioning
-All endpoints are prefixed with `/api/v1`. Future breaking changes will be introduced under `/api/v2`, preserving backward compatibility for existing frontend deployments during transition windows (per Database Design Document §10).
+All endpoints are prefixed with `/api` (e.g. `/api/auth`, `/api/castings`). The implemented API is unversioned — there is no `/api/v1`/`/api/v2` path segment in the actual Express routes (`backend/server.js`). A versioned URL scheme is a documented future consideration, not a current contract.
 
 ### 2.2 Authentication
 - Authentication uses **JWT Bearer tokens**.
@@ -837,7 +837,7 @@ Public health-check endpoint for uptime monitoring (Architecture §9.3).
 
 ```javascript
 // Client-side connection
-const socket = io('wss://api.talentmarketplace.live', {
+const socket = io('wss://atelier-talent.onrender.com', {
   auth: { token: accessToken }  // Same JWT from POST /auth/login
 });
 

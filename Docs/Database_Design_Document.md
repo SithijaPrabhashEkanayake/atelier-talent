@@ -480,7 +480,9 @@ applicationSchema.index({ castingCallId: 1, status: 1 });
 
 ---
 
-### 4.8 Collection: `match_results`
+### 4.8 Collection: `match_results` (design-stage — not implemented)
+
+> **Implementation note:** this collection does not exist in the shipped codebase. The implemented matching engine (`backend/services/matchingEngine.js` / `backend/utils/matchScore.js`) computes suitability scores on demand for each request and does not persist them. The schema below documents a considered caching design (Architecture §8.4) that was scoped out for the pilot; treat it as a forward-looking design, not a current data-model claim.
 
 | Field | Type | Constraints | Description |
 |---|---|---|---|
@@ -506,7 +508,9 @@ matchResultSchema.index({ castingCallId: 1, modelProfileId: 1 }, { unique: true 
 
 ---
 
-### 4.9 Collections: `message_threads` and `messages`
+### 4.9 Collections: `message_threads` (design-stage — not implemented) and `messages` (implemented as `Message.js`)
+
+> **Implementation note:** only `messages` exists in the shipped codebase (`backend/models/Message.js`), keyed directly by `applicationId` rather than through a separate thread document — `backend/sockets/chatSocket.js` authorizes and rooms chat by `applicationId` with no `message_threads`/`MessageThread` model. The `message_threads` schema below documents a considered normalization that was scoped out for the pilot.
 
 | Field (`message_threads`) | Type | Constraints | Description |
 |---|---|---|---|
@@ -550,7 +554,9 @@ messageSchema.index({ receiverId: 1, isRead: 1 });
 
 ---
 
-### 4.10 Collection: `verification_records`
+### 4.10 Collection: `verification_records` (design-stage — not implemented)
+
+> **Implementation note:** this collection does not exist in the shipped codebase. Verification is currently a simple `isVerified: Boolean` field set directly on the three role-profile models (`ModelProfile.js`, `IndustryProfile.js`, `PageantOrgProfile.js`), with no supporting-document upload or review-audit trail. The schema below documents a considered verification workflow that was scoped out for the pilot (also see `README.md`'s "Known Limitations": no legal-grade identity verification).
 
 | Field | Type | Constraints | Description |
 |---|---|---|---|
