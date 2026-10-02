@@ -44,6 +44,8 @@ Built as a BSc (Hons) Software Engineering capstone project at NSBM Green Univer
 ### Documentation index (`Docs/`)
 | Document | Purpose |
 |---|---|
+| **`Sandun_Distinction_Viva_Defense_Encyclopedia.md`** | **⭐ Definitive All-in-One Master Defense Manual, Screen-by-Screen Catalog, 25 Rebuttals & Technical Encyclopedia** |
+| **`Mac_Quickstart_and_Presentation_Guide.md`** | **🍎 macOS Zero-Friction Setup, Presentation Choreography & Hardware Survival Guide** |
 | `PRD_Global_Talent_Marketplace_and_Casting_Management_System.md` | Vision, personas, goals, KPIs, scope, roadmap |
 | `SRS_Global_Talent_Marketplace_and_Casting_Management_System.md` | Functional (FR) and non-functional (NFR) requirements |
 | `System_Architecture_Design_Document.md`, `system_architecture_diagram.md` | Architecture, decisions, diagrams |
@@ -198,6 +200,28 @@ talent-marketplace/
 ---
 
 ## Local Development Setup
+
+### ⚡ One-Click Cross-Platform Launchers (Recommended)
+
+To make running and presenting the application as smooth as butter, automated single-command launchers are provided for both operating systems:
+
+#### 🍎 macOS (Apple Silicon M1/M2/M3/M4 & Intel Mac)
+```bash
+cd talent-marketplace
+bash start-mac.sh
+```
+* **Auto-Dependency Management:** If you copied this folder from a Windows PC via USB/SSD, `start-mac.sh` automatically detects incompatible Windows binaries in `node_modules`, purges them, and installs native macOS packages!
+* **AirPlay Port 5000 Guard:** macOS AirPlay Receiver uses port 5000 by default. `start-mac.sh` alerts you and offers an automatic fallback to **Port 5001** if AirPlay is running.
+* **Auto-Configuration:** Generates working `backend/.env` with pre-configured Atlas credentials if missing.
+* **Dual Server Boot:** Boots both Backend API and Frontend Vite client simultaneously.
+*(See [`MAC_SETUP.md`](MAC_SETUP.md) or [`Docs/Mac_Quickstart_and_Presentation_Guide.md`](../Docs/Mac_Quickstart_and_Presentation_Guide.md) for full instructions).*
+
+#### 🪟 Windows PC
+Double-click `start-pc.bat` (or run `start-pc.bat` from terminal) inside `talent-marketplace/`. It launches both the backend and frontend in separate synchronized command windows.
+
+---
+
+### 🛠️ Manual Step-by-Step Setup
 
 1. **Environment files**
    ```bash

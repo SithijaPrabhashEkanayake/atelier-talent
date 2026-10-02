@@ -27,3 +27,9 @@ Thumbs.db
 coverage/
 .cache/
 .turbo/
+
+# AI Agent Caches & Workspace Metadata
+.agents/
+**/.agents/
+.claude/
+skills-lock.json

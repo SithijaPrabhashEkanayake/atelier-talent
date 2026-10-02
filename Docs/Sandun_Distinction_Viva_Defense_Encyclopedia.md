@@ -16,20 +16,20 @@
 ## Comprehensive Table of Contents
 1. [Executive System Identity & Academic Credentials](#1-executive-system-identity--academic-credentials)
 2. [Research Methodology & Theoretical Foundations (DSRM, TAM, Spence, Eisenmann)](#2-research-methodology--theoretical-foundations-dsrm-tam-spence-eisenmann)
-3. [System Architecture & Architectural Decision Records (ADR-01 to ADR-08)](#3-system-architecture--architectural-decision-records-adr-01-to-adr-08)
+3. [System Architecture & Architectural Decision Records (ADR-01 to ADR-10)](#3-system-architecture--architectural-decision-records-adr-01-to-adr-10)
 4. [Haute Couture Aesthetic & Design System Foundations](#4-haute-couture-aesthetic--design-system-foundations)
 5. [Complete Database Design: 12 Mongoose Schemas & ERD Specification](#5-complete-database-design-12-mongoose-schemas--erd-specification)
 6. [Complete REST API & WebSocket Event Specification](#6-complete-rest-api--websocket-event-specification)
-7. [Screen-by-Screen, Modal-by-Modal & Component Catalog](#7-screen-by-screen-modal-by-modal--component-catalog)
+7. [Screen-by-Screen, Button-by-Button & Modal-by-Modal Component Catalog](#7-screen-by-screen-button-by-button--modal-by-modal-component-catalog)
 8. [Algorithmic Matching Engine: Mathematical Model & Category Affinity Matrix](#8-algorithmic-matching-engine-mathematical-model--category-affinity-matrix)
-9. [Cybersecurity & DevSecOps Fortress (OWASP, STRIDE, GDPR)](#9-cybersecurity--devsecops-fortress-owasp-stride-gdpr)
+9. [Cybersecurity & DevSecOps Fortress (OWASP, STRIDE, GDPR, PDPA)](#9-cybersecurity--devsecops-fortress-owasp-stride-gdpr-pdpa)
 10. [Test Plan, QA Strategy & User Acceptance Testing (UAT) Verification](#10-test-plan-qa-strategy--user-acceptance-testing-uat-verification)
 11. [Project Management, Sprint Backlog (71 User Stories) & Risk Register (12 Risks)](#11-project-management-sprint-backlog-71-user-stories--risk-register-12-risks)
 12. [Dissertation Chapter-by-Chapter Traceability (Chapters 1 to 5)](#12-dissertation-chapter-by-chapter-traceability-chapters-1-to-5)
 13. [15-Minute Timed Viva Voce Demonstration Script & Dual-Browser Protocol](#13-15-minute-timed-viva-voce-demonstration-script--dual-browser-protocol)
 14. [Slide-by-Slide Defense Presentation Alignment (20 Slides)](#14-slide-by-slide-defense-presentation-alignment-20-slides)
-15. [Comprehensive Examiner Defense: 14 Distinction-Grade Rebuttals](#15-comprehensive-examiner-defense-14-distinction-grade-rebuttals)
-16. [macOS Presentation Readiness & Technical Troubleshooting Guide](#16-macos-presentation-readiness--technical-troubleshooting-guide)
+15. [Comprehensive Examiner Defense: 25 Distinction-Grade Rebuttals](#15-comprehensive-examiner-defense-25-distinction-grade-rebuttals)
+16. [macOS Presentation Readiness, Hardware Survival & Quickstart Guide](#16-macos-presentation-readiness-hardware-survival--quickstart-guide)
 
 ---
 
@@ -87,7 +87,7 @@ The system was engineered following **Peffers et al. (2007)**'s 6-stage DSRM fra
 
 ---
 
-## 3. System Architecture & Architectural Decision Records (ADR-01 to ADR-08)
+## 3. System Architecture & Architectural Decision Records (ADR-01 to ADR-10)
 
 The system is architected as a **3-Tier Modular Monolith**:
 1. **Presentation Tier:** React 19 SPA with Vite, Tailwind CSS v4, Framer Motion, and Zustand 5.
@@ -118,6 +118,7 @@ The system is architected as a **3-Tier Modular Monolith**:
 │              MongoDB Atlas M0                │ │       Cloudinary      │
 │  (Users, Profiles, Castings, Applications,   │ │ (Transformed WebP,    │
 │   Messages, Notifications, Audit Logs, etc.) │ │  Responsive Lightbox) │
+│   Compound Indexes, TTL Sessions             │ │  Edge CDN Caching     │
 └──────────────────────────────────────────────┘ └───────────────────────┘
 ```
 
@@ -130,6 +131,8 @@ The system is architected as a **3-Tier Modular Monolith**:
 * **ADR-06: Socket.io for Real-Time:** Enables sub-second bidirectional event distribution with automatic HTTP long-polling fallback, isolating channels by personal rooms (`user:${id}`) and application rooms (`application:${id}`).
 * **ADR-07: In-Process Deterministic Matching:** Avoids external Python/FastAPI microservice network latency and satisfies algorithmic transparency requirements.
 * **ADR-08: Single-Origin Production Deployment:** In production, Express serves both `/api` endpoints and the compiled React SPA from `frontend/dist`. This is essential because `SameSite: strict` refresh cookies and double-submit CSRF tokens require the frontend and API to share the identical origin domain.
+* **ADR-09: Zustand 5 for Global State:** Replaces bloated Redux Toolkit boilerplate with a minimalist, hook-based in-memory store. Zero external provider wrappers, sub-millisecond selector evaluations, and strict memory isolation for the access token.
+* **ADR-10: Tailwind CSS v4 Engine:** JIT CSS compilation with zero runtime style injection, reducing stylesheet transfer size to under 25KB while enforcing design token uniformity across all Haute Couture themes.
 
 ---
 
@@ -271,35 +274,125 @@ erDiagram
 
 ---
 
-## 7. Screen-by-Screen, Modal-by-Modal & Component Catalog
+## 7. Screen-by-Screen, Button-by-Button & Modal-by-Modal Component Catalog
 
-### 7.1 Global Interface Elements
-* **`Navbar.jsx`:** Brand monogram, unified `lg: 1024px` breakpoint (eliminating tablet clipping), notification bell with animated badge counter, role pill badge, and profile dropdown.
-* **`ScrollProgress.jsx`:** Fixed 2px liquid gold progress indicator tracking viewport depth.
-* **`CustomCursor.jsx`:** Spring-damped magnetic circular cursor with hover magnification over interactive elements.
-* **`ErrorBoundary.jsx`:** Graceful render-error boundary displaying an editorial "Atelier Recovery" view rather than a blank page.
+Every screen in ATELIER Talent is crafted following modern design engineering best practices. The table below arms Sandun with exact UI component references and defense justifications for examiners:
 
-### 7.2 Page-by-Page Walkthrough
-* **`Home.jsx` (`/`):**
-  * Auto-looping video hero (`VideoHero.jsx`), infinite brand marquee (`BrandMarquee.jsx`), 3D talent carousel (`Carousel.jsx`), live animated counters (`AnimatedCounter.jsx`), and parallax feature showcase (`ParallaxBanner.jsx`).
-* **`Login.jsx` & `Register.jsx` (`/login`, `/register`):**
-  * Interactive 3-card role selector (Model, Recruiter, Pageant Org). Public registration as `admin` is blocked server-side.
-* **`PublicProfile.jsx` (`/p/:id` — Digital Comp Card):**
-  * Editorial silhouette measurements grid (`heightCm`, `bust-waist-hips`, `eyeColor`), representation badge (Freelance vs. Agency), full-screen Cloudinary lightbox (`MediaLightbox.jsx`), "Add to Compare Tray" button, and A5 printable comp-card browser export.
-* **`ProfileEditor.jsx` (`/profile/edit`):**
-  * Dynamic form rendering tailored to authenticated role with metric/imperial measurement toggle.
-* **`PortfolioManager.jsx` (`/portfolio`):**
-  * Drag-and-drop Cloudinary uploader, drag-to-reorder cards, "Set as Cover" gold star button, and atomic asset deletion.
-* **`CastingBoard.jsx` & `CastingDetail.jsx` (`/castings`, `/castings/:id`):**
-  * Filter drawer, lazy-expiry status badges (`open`, `closed`, `expired`), demographic/physical criteria cards, and debounced one-click submission.
-* **`ManageApplicants.jsx` (`/castings/:id/applicants`):**
-  * Recruiter Kanban/table pipeline (`Submitted` ➔ `Shortlisted` ➔ `Accepted`), Compatibility Match Badge (`95% Match`), and the **Explainable Compatibility Inspector Modal** with animated radial gauge, factor breakdown, and qualitative justifications.
-* **`TalentSearch.jsx` (`/search`):**
-  * Studio Grid vs. Runway Carousel views, floating Comparison Dock (`CompareDock.jsx`) with Recharts radar attribute comparison, and the interactive Casting Budget Estimator (`BudgetCalculatorModal.jsx`) with Donut distribution and CSV export.
-* **`Chat.jsx` (`/chat`):**
-  * Real-time WebSocket chat channel unlocked exclusively upon mutual consent (`Accepted` status), typing indicators, and encrypted styling.
-* **`AdminDashboard.jsx` (`/admin`):**
-  * Member Oversight (Suspend/Reactivate), Casting Moderation (Unlist/Restore), Community Incident Queue, and Recharts Telemetry (Growth Wave & Ecosystem Balance Donut).
+### 7.1 Global Architectural UI Components
+* **`Navbar.jsx`:**
+  * **Brand Monogram & Typography:** Features an illuminated gold monogram with `tracking-[0.25em]`.
+  * **Breakpoint Unification:** Set strictly to `lg: 1024px`, preventing tablet layout breaking and hamburger overlapping.
+  * **Notification Bell:** Real-time badge counter with Framer Motion spring pop on incoming `live_dispatch`.
+  * **Role Badge:** Pill indicator rendering authenticated persona (`Model`, `Industry Pro`, `Pageant Org`, `Superadmin`).
+* **`ScrollProgress.jsx`:**
+  * Fixed 2px liquid gold progress bar at the very top of the viewport. Uses Framer Motion's `useScroll` and `useSpring` to give physical momentum to viewport depth.
+* **`CustomCursor.jsx`:**
+  * Hardware-accelerated magnetic cursor circle that expands upon hovering interactive buttons and links using CSS `mix-blend-mode: difference`.
+* **`CommandPalette.jsx` (`Cmd + K` / `Ctrl + K`):**
+  * Spotlight search modal allowing keyboard-driven jumping across models, castings, and system settings.
+* **`ErrorBoundary.jsx`:**
+  * Catches unhandled React render tree exceptions and displays an Haute Couture editorial recovery screen ("Atelier Session Recovery") rather than an empty white page.
+
+---
+
+### 7.2 Detailed Screen-by-Screen Component & Interaction Breakdown
+
+#### Page 1: Landing & Editorial Showcase (`Home.jsx` - Route `/`)
+* **Component File:** `talent-marketplace/frontend/src/pages/Home.jsx`
+* **Sub-Components:** `VideoHero.jsx`, `BrandMarquee.jsx`, `Carousel.jsx`, `AnimatedCounter.jsx`, `ParallaxBanner.jsx`.
+* **Visual Structure:**
+  1. *Video Hero Banner:* Full-bleed auto-looping runway video with CSS radial vignette gradient overlay.
+  2. *Primary Action Button ("Explore Open Castings"):* Glides user directly to `/castings`.
+  3. *Secondary Action Button ("Create Comp Card"):* Opens `/register` pre-selected to `model`.
+  4. *Brand Marquee:* Infinite horizontal CSS animation showcasing partner agencies and luxury fashion houses.
+  5. *3D Talent Carousel:* Interactive cards showcasing top models with hover tilt physics and category tags.
+  6. *Live Metrics Counter:* Four animated counters (`500+ Talents`, `120+ Castings`, `98% Match Satisfaction`, `48h Average Response Time`).
+* **Examiner Defense:** *"The home screen is not merely aesthetic; it solves the initial platform liquidity barrier by clearly communicating value to both supply (models looking for work) and demand (recruiters seeking talent)."*
+
+#### Page 2: Unified Authentication Portal (`Login.jsx` & `Register.jsx` - Routes `/login`, `/register`)
+* **Component Files:** `pages/Login.jsx`, `pages/Register.jsx`
+* **Interactive Elements:**
+  * *3-Card Persona Selector:* Large clickable visual cards for `Creative Model`, `Industry Professional`, and `Pageant Organizer`.
+  * *Security Constraint:* Public registration as `admin` is physically blocked in frontend forms and rejected by server schema validation.
+  * *Live Password Strength Meter:* Dynamic visual indicator enforcing 8+ characters, uppercase letter, and numerical digit.
+  * *"Forgot Password?" Button:* Triggers `ForgotPasswordModal.jsx` which initiates SHA-256 password reset dispatch.
+* **Examiner Defense:** *"We decouple authentication from authorization. Registering requires selecting a persona, which immediately initializes the correct polymorphic Mongoose profile in the database upon verification."*
+
+#### Page 3: Digital Comp Card Profile (`PublicProfile.jsx` - Route `/p/:id`)
+* **Component File:** `pages/PublicProfile.jsx`, `components/MediaLightbox.jsx`
+* **Interactive Elements:**
+  * *Editorial Silhouette Measurements Box:* Displays standardized measurements (`Height: 178cm`, `Bust: 86cm`, `Waist: 61cm`, `Hips: 89cm`, `Eyes: Hazel`, `Hair: Dark Brown`).
+  * *Representation Status Pill:* Displays "Freelance Talent" (green) or "Agency Signed: Storm Management" (gold).
+  * *Cloudinary Media Grid & Lightbox:* High-definition editorial photos. Clicking opens `MediaLightbox.jsx` with zoom, pan, and full-resolution WebP rendering.
+  * *"Add to Compare Tray" Button:* Adds candidate to the floating comparison tray for side-by-side radar analysis.
+  * *"Print / Export Comp Card" Button:* Triggers a dedicated `@media print` CSS stylesheet formatting the screen into an international A5 comp-card layout suitable for physical casting folders.
+* **Examiner Defense:** *"Physical composite cards cost models hundreds of dollars to print and mail. Our digital comp card standardizes measurement reporting, guarantees zero image distortion via Cloudinary, and offers instantaneous A5 PDF export."*
+
+#### Page 4: Talent Scout Directory & Search Matrix (`TalentSearch.jsx` - Route `/search`)
+* **Component File:** `pages/TalentSearch.jsx`, `components/CompareDock.jsx`, `components/BudgetCalculatorModal.jsx`
+* **Interactive Elements:**
+  * *Search Bar:* Debounced input (300ms) searching by stage name, city, or specialty skill.
+  * *Category Filter Pills:* Multi-select toggles (`Runway`, `Editorial`, `Commercial`, `Pageant`).
+  * *Height Range Dual-Slider:* Interactive slider filtering height between 150cm and 200cm.
+  * *View Switcher Toggle:* Switches between "Studio Grid" (compact masonry) and "Runway View" (large portrait cards).
+  * *Floating Compare Dock (`CompareDock.jsx`):* Pinned bottom dock showing selected models (up to 4) with a "View Radar Comparison" button that displays Recharts multi-attribute radar charts.
+  * *Casting Budget Estimator Modal (`BudgetCalculatorModal.jsx`):* Allows casting directors to calculate estimated production budgets based on model count, daily rate, shooting days, and currency (USD, EUR, LKR), complete with a Donut chart breakdown and CSV export.
+* **Examiner Defense:** *"Recruiters do not search for talent through plain text alone. They evaluate visual appeal, physical proportions, and budget constraints simultaneously. The radar dock and budget calculator turn a basic directory into an executive casting suite."*
+
+#### Page 5: Casting Call Board & Detail (`CastingBoard.jsx`, `CastingDetail.jsx` - Routes `/castings`, `/castings/:id`)
+* **Component Files:** `pages/CastingBoard.jsx`, `pages/CastingDetail.jsx`
+* **Interactive Elements:**
+  * *Filter Drawer:* Filter by Country, Compensation (`Paid`, `Expenses Covered`, `Unpaid/TFP`), and Category.
+  * *Status Badges:* Real-time indicators (`Open`, `Under Review`, `Closed`, `Expired`).
+  * *Lazy-Expiry Handler:* Expired casting deadlines are automatically flagged upon retrieval without requiring scheduled cron jobs.
+  * *"Apply to Casting" Modal:* Displays casting criteria, lets the model write a personalized cover note, and submits via `POST /api/applications/apply/:id`.
+  * *Duplicate Guard:* If already applied, the button changes to a disabled badge: "Application Submitted".
+* **Examiner Defense:** *"The compound unique database index `{ castingCallId: 1, modelProfileId: 1 }` prevents race condition duplicates, while client-side state dynamically disables the action once submitted."*
+
+#### Page 6: Applicant Management Pipeline & Compatibility Inspector (`ManageApplicants.jsx` - Route `/castings/:id/applicants`)
+* **Component File:** `pages/ManageApplicants.jsx`, `components/MatchInspectorModal.jsx`
+* **Interactive Elements:**
+  * *Recruiter Kanban / Pipeline Tabs:* Organizes applicants into columns: `Submitted`, `Under Review`, `Shortlisted`, `Accepted`, `Rejected`.
+  * *One-Click Pipeline Buttons:* Instant status mutation buttons (`Shortlist`, `Accept`, `Reject`).
+  * *Match Compatibility Pill:* Displays the calculated match score (e.g., `95% Match` in gold, `65% Match` in charcoal).
+  * *The Explainable Compatibility Inspector Modal (`MatchInspectorModal.jsx`):*
+    - Circular SVG animated gauge visualizing the 100-point score.
+    - 5 orthogonal progress bars: Age Range (25 pts), Height Spec (20 pts), Category Affinity (20 pts), Country Proximity (15 pts), Skill Set Jaccard (20 pts).
+    - Natural language explanation cards: E.g., *"Model height (178cm) meets the 175-182cm runway window (+20 pts)"*, *"Candidate category Editorial has a 0.6 affinity with Runway (+12 pts)"*.
+* **Examiner Defense:** *"This modal is the cornerstone of our academic contribution. It removes black-box obscurity and provides complete algorithmic transparency, ensuring recruiters make fair, auditable, and bias-resistant decisions."*
+
+#### Page 7: Direct-Line Studio Chat (`Chat.jsx` - Route `/chat`)
+* **Component File:** `pages/Chat.jsx`
+* **Interactive Elements:**
+  * *Access Gate:* Direct messaging is strictly locked until a recruiter officially updates an applicant's status to **Accepted**.
+  * *Active Thread Drawer:* Lists active accepted casting conversations with unread message badges.
+  * *Message Timeline:* Displays real-time message bubbles with avatar, delivery status, and formatted timestamps.
+  * *Typing Indicator Dots:* Real-time three-dot animation triggered via `typing` WebSocket events.
+* **Examiner Defense:** *"Unrestricted messaging leads to unsolicited harassment and exploitation of aspiring models. By locking direct chat behind mutual casting acceptance, our platform provides an enterprise safety barrier."*
+
+#### Page 8: Portfolio Multimedia Asset Manager (`PortfolioManager.jsx` - Route `/portfolio`)
+* **Component File:** `pages/PortfolioManager.jsx`
+* **Interactive Elements:**
+  * *Drag-and-Drop Cloudinary Dropzone:* Accepts JPEG, PNG, WebP images and MP4 showreels (up to 10MB).
+  * *Reorder Handles:* Drag-to-resequence portfolio assets with automatic display order persistence.
+  * *"Set as Cover" Star Button:* Updates `isCover: true`, designating the asset as the primary comp card portrait.
+  * *"Delete Asset" Modal:* Prompts confirmation, then atomically deletes the record from MongoDB and purges the asset from Cloudinary CDN via API publicId.
+* **Examiner Defense:** *"Media is uploaded through a streaming Multer buffer directly to Cloudinary, ensuring the Node.js server memory is never blocked by large image payloads."*
+
+#### Page 9: Superadmin Executive Command Center (`AdminDashboard.jsx` - Route `/admin`)
+* **Component File:** `pages/AdminDashboard.jsx`
+* **Interactive Elements:**
+  * *RBAC Security Barrier:* Authenticated route strictly restricted to users with `role: 'admin'`.
+  * *Tab 1: Member Oversight:* Searchable table of all registered users with "Suspend User" and "Reactivate User" actions. Suspending revokes all active refresh tokens instantly.
+  * *Tab 2: Casting Moderation:* Global review table of all posted casting calls with "Unlist / Remove" and "Restore" actions.
+  * *Tab 3: Community Incident Queue:* Review queue of user-filed reports with status toggles (`pending`, `investigating`, `resolved`, `dismissed`) and admin note entry.
+  * *Tab 4: Recharts Telemetric Analytics:*
+    - 7-Day / 30-Day / 90-Day range filter buttons.
+    - *Activity Growth Wave:* Interactive `AreaChart` tracking registrations, applications, and casting postings over time.
+    - *Ecosystem Balance Donut:* `PieChart` breaking down platform population (Models vs Recruiters vs Pageant Orgs).
+    - *Application Funnel Chart:* `BarChart` illustrating conversion rates through each stage of the casting pipeline.
+  * *Tab 5: Immutable Audit Log:* Chronological ledger recording all superadmin actions, timestamps, target IDs, and justification notes.
+* **Examiner Defense:** *"An enterprise marketplace requires full administrative sovereignty. The admin dashboard combines immediate moderation controls with long-term ecosystem health analytics."*
 
 ---
 
@@ -337,7 +430,7 @@ $$\sum_{i \in \mathcal{D}} W_i = 100$$
 
 ---
 
-## 9. Cybersecurity & DevSecOps Fortress (OWASP, STRIDE, GDPR)
+## 9. Cybersecurity & DevSecOps Fortress (OWASP, STRIDE, GDPR, PDPA)
 
 ### 9.1 Threat Modeling & Mitigation (STRIDE Analysis)
 * **Spoofing Identity:** Mitigated via dual-token JWT architecture with SHA-256 refresh rotation and password hashing using bcrypt (cost factor 10).
@@ -414,10 +507,10 @@ The test suite executes against an in-process, disposable MongoDB instance (`mon
 ## 13. 15-Minute Timed Viva Voce Demonstration Script & Dual-Browser Protocol
 
 ### 13.1 Pre-Flight Setup (5 Minutes Prior)
-1. **Launch Services on Mac:** Run `./start-mac.sh` in terminal (or start backend port 5000 and frontend port 5173).
+1. **Launch Services on Mac:** Run `bash start-mac.sh` in terminal.
 2. **Open Two Browser Windows Side-by-Side:**
-   * **Window A (Left Half - Recruiter):** Chrome logged in as `organizer1@demo.talent` (Serendib Fashion House) or `admin@demo.talent` (`Password123`).
-   * **Window B (Right Half - Model):** Firefox or Safari Private Window logged in as `model1@demo.talent` (Amara Silva).
+   * **Window A (Left Half - Recruiter):** Chrome logged in as `organizer1@demo.talent` (`Password123`).
+   * **Window B (Right Half - Model):** Safari or Firefox logged in as `model1@demo.talent` (Amara Silva).
 
 ### 13.2 Demonstration Choreography (15 Minutes)
 
@@ -466,7 +559,9 @@ Align verbal presentation directly with [`Sandun Presentation.md`](file:///f:/PR
 
 ---
 
-## 15. Comprehensive Examiner Defense: 14 Distinction-Grade Rebuttals
+## 15. Comprehensive Examiner Defense: 25 Distinction-Grade Rebuttals
+
+Here are the 25 most critical, technically demanding, and academically rigorous questions examiners may ask, paired with distinction-level verbal defenses:
 
 ### Q1: "Why use a rule-based matching algorithm instead of Machine Learning?"
 > **Defense:** "Under the EU AI Act and GDPR Article 22, automated recruitment systems using opaque black-box neural networks face strict regulatory hurdles regarding algorithmic bias. Our deterministic 100-point rubric provides complete, auditable factor-by-factor explainability. Furthermore, deep learning recommendation models suffer from the cold-start problem when interaction matrices are sparse, whereas a multi-attribute utility function provides accurate recommendations from Day 1."
@@ -510,33 +605,71 @@ Align verbal presentation directly with [`Sandun Presentation.md`](file:///f:/PR
 ### Q14: "Why did you choose Recharts over Chart.js or D3?"
 > **Defense:** "Recharts is built natively on React component primitives and SVG, enabling declarative data binding, reactive state animations, and seamless integration with our Obsidian/Gold Tailwind theme, while lazy-loading keeps it off the critical initial bundle path."
 
+### Q15: "Why choose MongoDB over PostgreSQL given relational dependencies between castings and applications?"
+> **Defense:** "While casting applications exhibit relational linkages, model profiles, agency profiles, and pageant delegate credentials possess deeply heterogeneous, evolving schemas. In a relational database, modeling diverse measurements, physical attributes, dynamic franchise accreditations, and multi-skill tags mandates sparse columns or cumbersome junction tables. MongoDB's polymorphic document model enables natural, localized schema polymorphism while compound indexes maintain strict referential uniqueness."
+
+### Q16: "How do you guarantee data consistency without distributed ACID transactions?"
+> **Defense:** "Within our modular monolith, individual document mutations are strictly atomic under MongoDB's single-document atomicity guarantees. For critical operations such as profile creation linked to a new user account, Mongoose executes within an explicit multi-document session transaction (`session.withTransaction()`). Furthermore, compound unique indexes enforce invariant constraints at the database engine level, preventing orphaned state."
+
+### Q17: "What happens if a recruiter accepts a model, but the WebSocket drops due to network interruption?"
+> **Defense:** "WebSocket events in ATELIER Talent serve exclusively as an instantaneous transport notification layer, never the single source of truth. The underlying application state transition is committed durably to MongoDB via the authenticated REST endpoint `PUT /api/applications/:id/status`. If a client disconnects, Socket.io automatically attempts exponential backoff reconnection; upon reconnect or page reload, the client fetches the verified state from the REST API."
+
+### Q18: "How does your system prevent malicious file uploads (e.g., SVG XSS or executable polyglots)?"
+> **Defense:** "We enforce a three-tier upload defense: First, Multer checks client MIME types and file extensions, permitting only verified formats (`image/jpeg`, `image/png`, `image/webp`, `video/mp4`). Second, files are streamed directly into Cloudinary's secure upload pipeline rather than saved to local disk, stripping executable headers. Third, Cloudinary converts and re-encodes assets into standardized WebP delivery formats, neutralizing malicious embedded scripts."
+
+### Q19: "Why did you test against an in-memory MongoDB rather than mocking Mongoose?"
+> **Defense:** "Mocking Mongoose models using libraries like Jest Mocks tests the mock implementation rather than real database engine behavior. In-memory MongoDB (`mongodb-memory-server`) executes genuine B-tree indexing, compound unique constraint validation, aggregation pipelines, and schema casting in an isolated RAM instance, ensuring our 67 automated tests validate genuine production semantics without network flakiness."
+
+### Q20: "How does your matching engine handle edge cases like missing candidate measurements or zero required skills?"
+> **Defense:** "The matching engine incorporates explicit defensive guards: if a casting notice specifies no skills, the skill component awards full neutral credit ($20/20$) rather than dividing by zero. Similarly, if a candidate profile has an unrecorded measurement, the Euclidean penalty defaults to a neutral median rather than an arithmetic crash, generating an explanatory note: *'Measurement unrecorded: neutral evaluation applied.'*"
+
+### Q21: "What is your defense against timing attacks during password and token verification?"
+> **Defense:** "Password verification uses bcrypt's constant-time comparison algorithm (`bcrypt.compare`), which evaluates cryptographic hashes in consistent execution time regardless of character mismatch position. Similarly, refresh token lookups hash incoming tokens using SHA-256 and query the database via indexed hashes, eliminating timing variations that could leak credential signatures."
+
+### Q22: "Why is client-side pagination not used on the Casting Board?"
+> **Defense:** "Client-side pagination requires fetching the entire database collection into the browser memory, which degrades mobile performance, balloons network payloads, and exposes unreleased or restricted casting data. We enforce server-side pagination with query limiting (`limit`, `skip`), returning bounded batches (e.g., 12 cards per page) with total count metadata."
+
+### Q23: "Explain the mathematical difference between your Jaccard similarity implementation and Cosine similarity."
+> **Defense:** "Cosine similarity measures the angle between two non-zero vectors in an inner product space, commonly utilized for high-dimensional term frequency vectors (TF-IDF). Jaccard similarity measures the ratio of intersection cardinality over union cardinality ($|A \cap B| / |A \cup B|$) for discrete, binary sets. In talent casting, skills represent discrete qualitative badges rather than continuous frequencies, making Jaccard overlap mathematically appropriate, computationally efficient, and directly explainable."
+
+### Q24: "Why choose Zustand 5 over Redux Toolkit or React Context API?"
+> **Defense:** "React Context triggers unnecessary re-renders across all consuming child components whenever any context value changes unless partitioned into multiple boilerplate providers. Redux Toolkit introduces substantial ceremony (reducers, actions, dispatch thunks, store wrappers) that adds unnecessary bundle bloat. Zustand 5 provides atomic selector subscriptions, zero runtime provider wrapping, and a minimalist footprint (<1.5KB), allowing in-memory access tokens to be stored securely outside the DOM."
+
+### Q25: "How does the system comply with the Sri Lanka Personal Data Protection Act No. 9 of 2022 (PDPA)?"
+> **Defense:** "Under PDPA Sections 5 through 12, data processing must adhere to purpose limitation, lawful processing, and data minimization. ATELIER Talent records explicit consent during registration, processes only physical attributes necessary for fashion casting, provides a self-service profile modification interface, and enforces complete data erasure upon account closure, fully aligning with Sri Lankan and international privacy standards."
+
 ---
 
-## 16. macOS Presentation Readiness & Technical Troubleshooting Guide
+## 16. macOS Presentation Readiness, Hardware Survival & Quickstart Guide
 
-### 16.1 macOS AirPlay Receiver Port 5000 Conflict & Resolution
-* **The Issue:** On macOS 12 (Monterey), 13 (Ventura), 14 (Sonoma), and 15 (Sequoia), the macOS Control Center service (`ControlCenter` / AirPlay Receiver) listens on port 5000 by default.
-* **The Built-In Protection:** In `talent-marketplace/backend/server.js`, we implemented an explicit `server.on('error')` handler that catches `EADDRINUSE` and prints a clear message explaining how to disable AirPlay Receiver or set `PORT=5001`.
-* **How to Disable AirPlay on Mac (Takes 5 seconds):**
-  `Apple Menu  > System Settings > General > AirDrop & AirPlay > Turn OFF "AirPlay Receiver"`.
+### 16.1 The 3 macOS Golden Rules (Read First!)
+1. **The Port 5000 AirPlay Conflict:** On macOS Monterey, Ventura, Sonoma, and Sequoia (macOS 12–15), Apple's built-in **AirPlay Receiver** (`ControlCenter`) listens on port 5000 by default.
+   * **The 5-Second Fix:** Open `System Settings > General > AirDrop & AirPlay > Turn OFF "AirPlay Receiver"`.
+   * **The Built-In Fallback:** If you forget or cannot turn off AirPlay, our launcher `start-mac.sh` automatically detects the conflict and offers to boot on **Port 5001**!
+2. **The SSD/USB Copy Rule (Windows vs Mac Binaries):** If you copy the folder from Windows via an external SSD, **never reuse Windows `node_modules`!** Windows native binaries (like `esbuild.exe`) will crash on macOS ARM64 Apple Silicon. Running `bash start-mac.sh` automatically detects Windows binaries, deletes them, and installs native macOS dependencies.
+3. **The Hidden `.env` Rule:** On macOS Finder, `.env` files are hidden. Press **`Cmd + Shift + .`** to reveal them. If missing, `start-mac.sh` automatically creates `backend/.env` with working cloud credentials!
 
-### 16.2 One-Click Mac Launch Script (`start-mac.sh`)
-In terminal on Mac, simply run:
+### 16.2 One-Command Launch on Mac
+In Terminal on your Mac, navigate to the folder and run:
 ```bash
 cd talent-marketplace
-chmod +x start-mac.sh
-./start-mac.sh
+bash start-mac.sh
 ```
-The script:
-1. Detects Node.js version.
-2. Checks port 5000 for AirPlay Receiver conflicts and warns you.
-3. Automatically creates `backend/.env` from `.env.example` if missing.
-4. Boots the Backend (Port 5000) and Frontend (Port 5173) simultaneously.
+*That is literally all! The script configures the environment, handles port conflicts, and boots both servers simultaneously.*
 
-### 16.3 macOS Split View for the Live Demonstration
-1. Open Chrome on the left half of the Mac screen (Recruiter / Admin).
-2. Open Safari (or Firefox/Chrome Incognito) on the right half (Model).
-3. Use macOS Split View (`Green Fullscreen button > Tile Window to Left of Screen`) for a flawless presentation layout.
+### 16.3 macOS Quarantine Removal (If Downloaded as ZIP)
+If you downloaded the repository as a `.zip` from GitHub or received it via AirDrop, macOS Gatekeeper may flag scripts with a quarantine attribute. Run this one line in Terminal to grant complete execution permission:
+```bash
+xattr -cr "talent-marketplace"
+chmod +x talent-marketplace/start-mac.sh
+```
+
+### 16.4 Offline Emergency Mode (No Wi-Fi / No Atlas Connection)
+If the exam room Wi-Fi fails or blocks MongoDB Atlas:
+1. Terminal Window 1: `cd talent-marketplace/backend && node scripts/dev-mongo.js`
+2. Terminal Window 2: `cd talent-marketplace/backend && MONGO_URI=mongodb://127.0.0.1:27117/talent-marketplace npm run dev`
+3. Terminal Window 3: `cd talent-marketplace/frontend && npm run dev`
+*The system will run completely offline with zero internet access!*
 
 ---
-*This master document is the official, comprehensive viva voce defense and software engineering reference for candidate Sandun Prabath (Index: 28607), BSc (Hons) Software Engineering, Faculty of Computing, NSBM Green University.*
+*Master Defense Encyclopedia and Technical Reference for candidate Sandun Prabath (Index: 28607), BSc (Hons) Software Engineering, Faculty of Computing, NSBM Green University. Evaluated by Academic Supervisor Ms. Lakni Peiris.*
