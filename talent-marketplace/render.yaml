@@ -10,7 +10,7 @@ services:
     # origin. Splitting these into two services (e.g. a separate static
     # site) breaks the sameSite:strict refresh cookie and CSRF double-submit
     # cookie, which both require the frontend and API on the same origin.
-    buildCommand: cd frontend && npm ci && npm run build && cd ../backend && npm ci
+    buildCommand: cd frontend && npm install && npm run build && cd ../backend && (npm ci --omit=dev || npm install --omit=dev)
     startCommand: cd backend && npm start
     healthCheckPath: /api/health
     envVars:
@@ -18,10 +18,6 @@ services:
         value: production
       - key: PORT
         value: 5000
-      # Same-origin deploy: CLIENT_URL should be this service's own Render
-      # URL (e.g. https://talent-marketplace.onrender.com) once known —
-      # CORS still needs it for cases where a request's Origin header is
-      # present even on a same-origin request.
       - key: CLIENT_URL
         sync: false
       - key: MONGO_URI
