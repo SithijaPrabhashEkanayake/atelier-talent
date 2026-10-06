@@ -20,114 +20,9 @@ import Carousel from '../components/Carousel';
 import ParallaxBanner from '../components/ParallaxBanner';
 import MediaLightbox from '../components/MediaLightbox';
 import AnimatedCounter from '../components/AnimatedCounter';
+import { SL_FALLBACK_TALENT } from '../data/sriLankanTalent';
 
-// Curated high-fashion demo talents for immediate rich visual presentation
-const editorialFallbacks = [
-  {
-    id: 'f1',
-    fullName: 'Elena Rostova',
-    category: 'runway',
-    country: 'France',
-    heightCm: 180,
-    experience: 'Professional',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 86, waist: 60, hips: 89 },
-    eyeColor: 'Hazel',
-  },
-  {
-    id: 'f2',
-    fullName: 'Marcus Vance',
-    category: 'editorial',
-    country: 'United Kingdom',
-    heightCm: 188,
-    experience: 'Professional',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 98, waist: 76, hips: 94 },
-    eyeColor: 'Blue',
-  },
-  {
-    id: 'f3',
-    fullName: 'Ananya Senanayake',
-    category: 'pageant',
-    country: 'Sri Lanka',
-    heightCm: 177,
-    experience: 'Lead Titleholder',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 88, waist: 62, hips: 91 },
-    eyeColor: 'Dark Brown',
-  },
-  {
-    id: 'f4',
-    fullName: 'Kenji Takahashi',
-    category: 'commercial',
-    country: 'Japan',
-    heightCm: 185,
-    experience: 'Experienced',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 96, waist: 75, hips: 93 },
-    eyeColor: 'Black',
-  },
-  {
-    id: 'f5',
-    fullName: 'Amara Diop',
-    category: 'runway',
-    country: 'Senegal',
-    heightCm: 182,
-    experience: 'Professional',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 84, waist: 59, hips: 88 },
-    eyeColor: 'Brown',
-  },
-  {
-    id: 'f6',
-    fullName: 'Sofia Al-Mansoor',
-    category: 'editorial',
-    country: 'United Arab Emirates',
-    heightCm: 176,
-    experience: 'Professional',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 87, waist: 61, hips: 90 },
-    eyeColor: 'Green',
-  },
-  {
-    id: 'f7',
-    fullName: 'Mateo Silva',
-    category: 'commercial',
-    country: 'Brazil',
-    heightCm: 186,
-    experience: 'Professional',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 99, waist: 78, hips: 96 },
-    eyeColor: 'Amber',
-  },
-  {
-    id: 'f8',
-    fullName: 'Chiara Bellini',
-    category: 'pageant',
-    country: 'Italy',
-    heightCm: 179,
-    experience: 'Pageant Finalist',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 89, waist: 62, hips: 92 },
-    eyeColor: 'Hazel',
-  },
-];
+const editorialFallbacks = SL_FALLBACK_TALENT;
 
 function MetricsStrip() {
   const metrics = [
@@ -447,9 +342,9 @@ function EcosystemSection() {
 function LiveCastingSection() {
   const castings = [
     {
-      title: 'Milan Autumn Fashion Week — Runway Lead',
+      title: 'Colombo Autumn Fashion Week — Runway Lead',
       org: 'Vogue Italia Production',
-      country: 'Italy',
+      country: 'Sri Lanka',
       category: 'Runway',
       compensation: '€2,500 / Day',
       deadline: 'Oct 15, 2026',
@@ -467,9 +362,9 @@ function LiveCastingSection() {
       criteria: 'Editorial portfolio · High poise',
     },
     {
-      title: 'High Jewelry Campaign — Tokyo & Paris',
+      title: 'High Jewelry Campaign — Colombo & Kandy',
       org: 'Luxe Global Agency',
-      country: 'Japan',
+      country: 'Sri Lanka',
       category: 'Editorial',
       compensation: '$4,000 Total',
       deadline: 'Oct 28, 2026',

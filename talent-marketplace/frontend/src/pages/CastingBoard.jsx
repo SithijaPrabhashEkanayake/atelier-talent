@@ -9,32 +9,32 @@ import useAuthStore from '../store/authStore';
 const curatedCastingFallbacks = [
   {
     _id: 'c1',
-    title: 'Milan Autumn Fashion Week — Runway Opening Lead',
+    title: 'Colombo Autumn Fashion Week — Runway Opening Lead',
     description:
-      'Seeking high-fashion runway models for the opening segment of Milan Fashion Week. Prior runway walk experience and ability to attend 2 fitting sessions in Milan required.',
+      'Seeking high-fashion runway models for the opening segment of Colombo Fashion Week. Prior runway walk experience and ability to attend 2 fitting sessions in Colombo required.',
     category: 'runway',
-    country: 'Italy',
+    country: 'Sri Lanka',
     status: 'open',
     applicationDeadline: '2026-10-25T00:00:00.000Z',
     ageRange: { min: 18, max: 28 },
     heightRangeCm: { min: 178, max: 188 },
     moodboardUrl:
-      'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1536766768598-e09213fdcf22?w=800&q=80&auto=format&fit=crop',
     compensation: '€2,500 / Day + Flights',
   },
   {
     _id: 'c2',
     title: 'Vogue Global Haute Couture Editorial Campaign',
     description:
-      'High-concept print and digital editorial spread shot across Paris historic landmarks. Looking for models with strong expressive facial structure and versatile posing capabilities.',
+      'High-concept print and digital editorial spread shot across historic Kandy landmarks. Looking for models with strong expressive facial structure and versatile posing capabilities.',
     category: 'editorial',
-    country: 'France',
+    country: 'Sri Lanka',
     status: 'open',
     applicationDeadline: '2026-11-04T00:00:00.000Z',
     ageRange: { min: 19, max: 32 },
     heightRangeCm: { min: 175, max: 185 },
     moodboardUrl:
-      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1653055645127-54ec96add7b5?w=800&q=80&auto=format&fit=crop',
     compensation: '€4,200 Total Fee',
   },
   {
@@ -49,7 +49,7 @@ const curatedCastingFallbacks = [
     ageRange: { min: 18, max: 30 },
     heightRangeCm: { min: 174, max: 190 },
     moodboardUrl:
-      'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1778148046667-7228d3dc59cd?w=800&q=80&auto=format&fit=crop',
     compensation: 'LKR 150,000 / Show',
   },
   {
@@ -64,14 +64,14 @@ const curatedCastingFallbacks = [
     ageRange: { min: 18, max: 28 },
     heightRangeCm: { min: 172, max: 185 },
     moodboardUrl:
-      'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1781106782412-d160a437d658?w=800&q=80&auto=format&fit=crop',
     compensation: 'Franchise Crown Sponsorship',
   },
   {
     _id: 'c5',
     title: 'High-End Luxury Watch & Jewelry Commercial Campaign',
     description:
-      'Major advertising campaign for Swiss watch manufacturer. Studio shoot in Geneva followed by location video reel in Tokyo.',
+      'Major advertising campaign for Swiss watch manufacturer. Studio shoot in Colombo followed by location video reel in Galle.',
     category: 'commercial',
     country: 'Switzerland',
     status: 'open',
@@ -79,22 +79,22 @@ const curatedCastingFallbacks = [
     ageRange: { min: 22, max: 40 },
     heightRangeCm: { min: 175, max: 192 },
     moodboardUrl:
-      'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1772037848780-f4c456155b90?w=800&q=80&auto=format&fit=crop',
     compensation: '$5,500 Full Rights',
   },
   {
     _id: 'c6',
-    title: 'Tokyo Streetwear Lookbook & Runway Collective',
+    title: 'Galle Streetwear Lookbook & Runway Collective',
     description:
       'Avant-garde streetwear collection lookbook and private salon runway in Shibuya. Looking for edgy editorial models with distinct styling.',
     category: 'editorial',
-    country: 'Japan',
+    country: 'Sri Lanka',
     status: 'open',
     applicationDeadline: '2026-11-10T00:00:00.000Z',
     ageRange: { min: 18, max: 30 },
     heightRangeCm: { min: 170, max: 188 },
     moodboardUrl:
-      'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=800&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1774171312574-c468f3f5f0fa?w=800&q=80&auto=format&fit=crop',
     compensation: '¥300,000 Total',
   },
 ];

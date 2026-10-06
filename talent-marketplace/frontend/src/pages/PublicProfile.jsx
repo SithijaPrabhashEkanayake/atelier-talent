@@ -16,6 +16,7 @@ import api from '../api/axiosConfig';
 import MediaLightbox from '../components/MediaLightbox';
 import useCompareStore from '../store/compareStore';
 import soundFX from '../utils/soundEffects';
+import { SL_FEMALE_PHOTOS } from '../data/sriLankanTalent';
 
 function ProfileSkeleton() {
   return (
@@ -75,9 +76,7 @@ export default function PublicProfile() {
     );
   }
 
-  const coverImage =
-    portfolio[0]?.mediaUrl ||
-    'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1200&auto=format&fit=crop';
+  const coverImage = portfolio[0]?.mediaUrl || SL_FEMALE_PHOTOS[4];
   const displayName = profile.fullName || profile.organizationName || 'Talent Profile';
 
   const openLightbox = (index) => {

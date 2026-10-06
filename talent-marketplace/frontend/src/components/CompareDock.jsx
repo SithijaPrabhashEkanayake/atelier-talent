@@ -87,7 +87,7 @@ export default function CompareDock() {
                     src={
                       talent.thumbnailUrl ||
                       talent.photoUrl ||
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200'
+                      'https://images.unsplash.com/photo-1536766768598-e09213fdcf22?q=80&w=200'
                     }
                     alt={talent.fullName}
                     className="w-10 h-10 rounded-full object-cover border-2 border-amber-400 shadow-md"
@@ -258,7 +258,7 @@ export default function CompareDock() {
                           src={
                             talent.thumbnailUrl ||
                             talent.photoUrl ||
-                            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400'
+                            'https://images.unsplash.com/photo-1536766768598-e09213fdcf22?q=80&w=400'
                           }
                           alt={talent.fullName}
                           className="w-20 h-24 object-cover rounded-xl border border-white/10 mb-3 shadow-lg"

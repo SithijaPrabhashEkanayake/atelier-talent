@@ -132,7 +132,7 @@ export default function VideoHero() {
 
             <div className="flex items-center gap-4 text-xs font-sans text-zinc-300 flex-wrap justify-center">
               <span className="bg-white/5 px-3 py-1 rounded-full border border-white/5 hover:border-amber-400/40 transition-colors">
-                ✨ <b>Vogue Runway Fall 2026</b> · Milan
+                ✨ <b>Vogue Runway Fall 2026</b> · Colombo
               </span>
               <span className="bg-white/5 px-3 py-1 rounded-full border border-white/5 hover:border-amber-400/40 transition-colors">
                 🔥 <b>Colombo Fashion Week Lead</b> · Sri Lanka
