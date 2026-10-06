@@ -108,7 +108,8 @@ const categoryBadges = {
 
 export default function CastingBoard() {
   const { user } = useAuthStore();
-  const [castings, setCastings] = useState(curatedCastingFallbacks);
+  const [castings, setCastings] = useState([]);
+  const [loadError, setLoadError] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
 
@@ -116,12 +117,9 @@ export default function CastingBoard() {
     const fetchCastings = async () => {
       try {
         const res = await api.get('/castings');
-        if (res.data.data && res.data.data.length > 0) {
-          // Merge real castings with curated visuals
-          setCastings(res.data.data);
-        }
+        setCastings(res.data.data || []);
       } catch {
-        // Keep fallbacks
+        setLoadError('Castings could not be loaded. Please refresh the page.');
       } finally {
         setLoading(false);
       }
@@ -298,10 +296,10 @@ export default function CastingBoard() {
           <div className="flex flex-col items-center justify-center py-24 glass-dark rounded-3xl border border-white/10 text-center px-4">
             <Inbox size={48} className="text-amber-400/40 mb-4" />
             <h3 className="text-lg font-bold font-sans text-white mb-2">
-              No Open Castings in this Category
+              {loadError ? 'Castings Unavailable' : 'No Open Castings in this Category'}
             </h3>
             <p className="text-zinc-400 text-xs max-w-sm mb-6">
-              Check back soon or explore other categories on the board.
+              {loadError || 'Check back soon or explore other categories on the board.'}
             </p>
             <button
               onClick={() => setSelectedCategory('all')}
