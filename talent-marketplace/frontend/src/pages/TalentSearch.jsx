@@ -79,44 +79,63 @@ export default function TalentSearch() {
 
   const { selectedTalents, openCompare, openBudgetModal, openCommandPalette } = useCompareStore();
   const [results, setResults] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'carousel'
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  // Public featured list shown until the first filtered search runs.
-  useEffect(() => {
-    api
-      .get('/profiles/showcase')
-      .then((res) => setResults(res.data.data || []))
-      .catch(() => {});
-  }, []);
-
-  const runSearch = async (nextFilters) => {
+  const runSearch = async (nextFilters, pageNumber = 1, append = false) => {
     setError('');
-    setLoading(true);
+    if (append) setLoadingMore(true);
+    else setLoading(true);
     try {
-      const res = await api.get(`/search/talent?${buildSearchParams(nextFilters)}`);
-      setResults(res.data.data || []);
+      const params = buildSearchParams(nextFilters);
+      params.set('page', pageNumber);
+      params.set('limit', 12);
+      const res = await api.get(`/search/talent?${params.toString()}`);
+      const data = res.data.data || [];
+      setResults((prev) => (append ? [...prev, ...data] : data));
+      setPage(pageNumber);
+      setTotal(res.data.meta?.totalItems ?? data.length);
+      setTotalPages(res.data.meta?.totalPages ?? 1);
     } catch (err) {
       const status = err.response?.status;
       if (status === 401 || status === 403) {
         try {
           const featured = await api.get('/profiles/showcase');
-          setResults(featured.data.data || []);
+          const data = featured.data.data || [];
+          setResults(data);
+          setTotal(data.length);
         } catch {
           setResults([]);
+          setTotal(0);
         }
+        setPage(1);
+        setTotalPages(1);
         setError('Sign in as a casting or pageant organiser to filter the full directory. Showing featured talent.');
       } else {
         setResults([]);
+        setTotal(0);
         setError('Could not load talent right now. Please try again.');
       }
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
+
+  useEffect(() => {
+    runSearch(EMPTY_FILTERS);
+    // Runs once on mount; the search reads only constants and state setters.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadMore = () => runSearch(filters, page + 1, true);
 
   const handleSearch = (e) => {
     if (e) e.preventDefault();
@@ -398,7 +417,8 @@ export default function TalentSearch() {
           <div className="flex-1 w-full">
             <div className="flex items-center justify-between mb-6">
               <span className="text-xs font-mono text-zinc-400">
-                Displaying <b className="text-white">{results.length}</b> verified talents
+                Displaying <b className="text-white">{results.length}</b> of{' '}
+                <b className="text-white">{total}</b> verified talents
               </span>
             </div>
 
@@ -463,6 +483,19 @@ export default function TalentSearch() {
                       className="btn-ghost-luxury !text-xs !py-2 cursor-pointer"
                     >
                       Reset All Filters
+                    </button>
+                  </div>
+                )}
+
+                {!loading && page < totalPages && (
+                  <div className="flex justify-center mt-10">
+                    <button
+                      type="button"
+                      onClick={loadMore}
+                      disabled={loadingMore}
+                      className="btn-gold !text-xs !py-3 !px-6 disabled:opacity-60 cursor-pointer"
+                    >
+                      {loadingMore ? 'Loading…' : 'Load more talent'}
                     </button>
                   </div>
                 )}
