@@ -25,35 +25,39 @@ import { SL_FALLBACK_TALENT } from '../data/sriLankanTalent';
 const editorialFallbacks = SL_FALLBACK_TALENT;
 
 function MetricsStrip() {
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    api
+      .get('/stats')
+      .then((res) => setStats(res.data.data))
+      .catch(() => setStats(null));
+  }, []);
+
   const metrics = [
     {
-      label: 'Accredited Talent Profiles',
-      end: 5000,
-      suffix: '+',
+      label: 'Published Talent',
+      value: stats?.publishedTalent,
       icon: Users2,
-      sub: 'Worldwide Representation',
+      sub: 'Models & talent profiles',
     },
     {
-      label: 'Published Casting Calls',
-      end: 1200,
-      suffix: '+',
-      icon: Flame,
-      sub: 'High-Fashion & Pageants',
-    },
-    {
-      label: 'Countries Represented',
-      end: 48,
-      suffix: '',
-      icon: Globe2,
-      sub: 'Cross-Border Scouting',
-    },
-    {
-      label: 'Match Accuracy Score',
-      end: 98.4,
-      decimals: 1,
-      suffix: '%',
+      label: 'Verified Talent',
+      value: stats?.verifiedTalent,
       icon: Award,
-      sub: 'Algorithmic Suitability',
+      sub: 'Profiles approved by an admin',
+    },
+    {
+      label: 'Open Casting Calls',
+      value: stats?.openCastings,
+      icon: Flame,
+      sub: 'Accepting applications now',
+    },
+    {
+      label: 'Applications Received',
+      value: stats?.submissions,
+      icon: Globe2,
+      sub: 'Submissions to date',
     },
   ];
 
@@ -77,7 +81,7 @@ function MetricsStrip() {
                 </div>
                 <div>
                   <div className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight">
-                    <AnimatedCounter end={m.end} suffix={m.suffix} decimals={m.decimals || 0} />
+                    {typeof m.value === 'number' ? <AnimatedCounter end={m.value} /> : '—'}
                   </div>
                   <div className="text-xs font-mono text-zinc-300 font-medium">{m.label}</div>
                   <div className="text-[10px] font-mono text-zinc-500 mt-0.5">{m.sub}</div>
@@ -131,7 +135,7 @@ function ModelShowcaseSection({ onOpenLightbox }) {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
             <span className="inline-flex items-center gap-1.5 text-xs font-mono tracking-[0.25em] uppercase text-amber-400 mb-2">
-              <Sparkles size={12} /> Curated International Roster
+              <Sparkles size={12} /> Curated Sri Lankan Roster
             </span>
             <h2 className="text-3xl sm:text-5xl font-display font-bold text-white tracking-tight">
               Featured{' '}
@@ -244,7 +248,7 @@ function EcosystemSection() {
       desc: 'Create verified multimedia portfolios with high-res editorial galleries, video runway reels, and standardized measurements. Connect directly with casting directors worldwide without agency bias.',
       badge: 'FOR CREATORS',
       bgImg:
-        'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1650421761734-7a7f2baa8b34?q=80&w=800&auto=format&fit=crop',
       link: '/register',
       cta: 'Build Portfolio',
     },
@@ -254,7 +258,7 @@ function EcosystemSection() {
       desc: 'Launch targeted casting calls with exact demographic, height, and stylistic criteria. Our explainable suitability engine ranks applicants automatically, reducing scouting cycles by 75%.',
       badge: 'FOR RECRUITERS',
       bgImg:
-        'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1684082743582-24dc5558fcd6?q=80&w=800&auto=format&fit=crop',
       link: '/castings/create',
       cta: 'Post Casting Call',
     },
@@ -264,7 +268,7 @@ function EcosystemSection() {
       desc: 'Manage global pageant franchises, verify national delegates, coordinate multi-round auditions, and track contestant profiles with institutional transparency and cryptographic security.',
       badge: 'FOR ORGANIZERS',
       bgImg:
-        'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1782485480913-132b2644a7bc?q=80&w=800&auto=format&fit=crop',
       link: '/register',
       cta: 'Register Institution',
     },

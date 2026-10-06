@@ -14,21 +14,35 @@ import useCompareStore from '../store/compareStore';
 import soundFX from '../utils/soundEffects';
 import fireGoldConfetti from '../utils/confetti';
 
-// Compute realistic radar metrics based on category & measurements
-function getRadarAttributes(talent) {
-  const cat = (talent.category || '').toLowerCase();
-  const height = talent.heightCm || 178;
-  const isRunway = cat === 'runway';
-  const isEditorial = cat === 'editorial';
-  const isPageant = cat === 'pageant';
+// Each axis is scaled 0–100 from a recorded profile field. The scales are
+// fixed and shown beside the chart so the scores can be checked by hand.
+export const RADAR_SCALES = {
+  heightCm: { min: 150, max: 195 },
+  experienceCredits: { full: 6 },
+  portfolioPhotos: { full: 4 },
+  skills: { full: 4 },
+};
+
+const scaleTo = (value, full) => Math.round(Math.min(100, Math.max(0, (value / full) * 100)));
+
+export function getRadarAttributes(talent) {
+  const { min, max } = RADAR_SCALES.heightCm;
+  const heightScore = talent.heightCm
+    ? Math.round(Math.min(100, Math.max(0, ((talent.heightCm - min) / (max - min)) * 100)))
+    : 0;
 
   return [
-    { attribute: 'Runway Stride', value: isRunway ? 96 : height >= 180 ? 90 : 78 },
-    { attribute: 'Editorial Poise', value: isEditorial ? 95 : 84 },
-    { attribute: 'Commercial Charm', value: cat === 'commercial' ? 98 : isPageant ? 90 : 82 },
-    { attribute: 'Pageant Elegance', value: isPageant ? 98 : 80 },
-    { attribute: 'Proportion Ratio', value: height >= 177 ? 92 : 85 },
-    { attribute: 'Camera Affinity', value: talent.isVerified ? 94 : 88 },
+    { attribute: 'Height', value: heightScore },
+    {
+      attribute: 'Experience',
+      value: scaleTo(talent.experienceCount ?? 0, RADAR_SCALES.experienceCredits.full),
+    },
+    {
+      attribute: 'Portfolio',
+      value: scaleTo(talent.portfolioCount ?? 0, RADAR_SCALES.portfolioPhotos.full),
+    },
+    { attribute: 'Skills', value: scaleTo(talent.skillCount ?? 0, RADAR_SCALES.skills.full) },
+    { attribute: 'Verified', value: talent.isVerified ? 100 : 0 },
   ];
 }
 
@@ -44,29 +58,14 @@ export default function CompareDock() {
 
   if (selectedTalents.length === 0) return null;
 
-  // Combine radar data across selected talents
-  const radarAttributes = [
-    'Runway Stride',
-    'Editorial Poise',
-    'Commercial Charm',
-    'Pageant Elegance',
-    'Proportion Ratio',
-    'Camera Affinity',
-  ];
-  const chartData = radarAttributes.map((attr, idx) => {
-    const entry = { attribute: attr };
-    selectedTalents.forEach((talent, tIdx) => {
-      const attrs = getRadarAttributes(talent);
-      entry[`talent_${tIdx}`] = attrs[idx]?.value || 80;
+  const perTalentAttributes = selectedTalents.map((talent) => getRadarAttributes(talent));
+  const chartData = perTalentAttributes[0].map((axis, idx) => {
+    const entry = { attribute: axis.attribute };
+    perTalentAttributes.forEach((attrs, tIdx) => {
+      entry[`talent_${tIdx}`] = attrs[idx].value;
     });
     return entry;
   });
-
-  const handleShortlistAll = () => {
-    soundFX.playCelebration();
-    fireGoldConfetti({ particleCount: 90 });
-    alert(`Shortlisted ${selectedTalents.length} talents to current casting shortlist!`);
-  };
 
   return (
     <>
@@ -166,13 +165,6 @@ export default function CompareDock() {
 
                 <div className="flex items-center gap-3">
                   <button
-                    onClick={handleShortlistAll}
-                    className="btn-gold !py-2 !px-4 !text-xs hidden sm:flex items-center gap-1.5"
-                  >
-                    <Check size={14} />
-                    <span>Shortlist Selected ({selectedTalents.length})</span>
-                  </button>
-                  <button
                     onClick={closeCompare}
                     aria-label="Close comparison"
                     className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors"
@@ -187,7 +179,7 @@ export default function CompareDock() {
                 {/* Left: Multidimensional Radar Chart */}
                 <div className="lg:col-span-6 bg-zinc-950/60 border border-white/10 rounded-2xl p-4 sm:p-6 flex flex-col items-center">
                   <span className="text-xs font-mono uppercase tracking-widest text-amber-400 font-bold mb-2">
-                    Multidimensional Attribute Radar
+                    Recorded Profile Data
                   </span>
                   <div className="w-full h-72 sm:h-80">
                     <ResponsiveContainer width="100%" height="100%">
@@ -239,11 +231,18 @@ export default function CompareDock() {
                       </div>
                     ))}
                   </div>
+                  <p className="mt-3 text-[10px] font-mono text-zinc-500 text-center leading-relaxed">
+                    Height: 150–195 cm · Experience: 6+ credits · Portfolio: 4+ photos · Skills: 4+
+                    · Verified: yes/no. Scores are computed from each profile&apos;s recorded data.
+                  </p>
                 </div>
 
                 {/* Right: Comparative Stat Breakdown Cards */}
                 <div className="lg:col-span-6 space-y-4">
-                  <div className={`grid grid-cols-${selectedTalents.length} gap-4`}>
+                  <div
+                    className="grid gap-4"
+                    style={{ gridTemplateColumns: `repeat(${selectedTalents.length}, minmax(0, 1fr))` }}
+                  >
                     {selectedTalents.map((talent, idx) => (
                       <div
                         key={talent.id || talent._id}
@@ -328,13 +327,6 @@ export default function CompareDock() {
                     className="w-full sm:w-auto px-4 py-2 border border-white/10 text-xs font-mono uppercase rounded-full text-zinc-400 hover:text-white transition-colors"
                   >
                     Clear Tray
-                  </button>
-                  <button
-                    onClick={handleShortlistAll}
-                    className="w-full sm:w-auto btn-gold !py-2.5 !px-6 !text-xs flex items-center justify-center gap-2"
-                  >
-                    <Check size={14} />
-                    <span>Confirm Shortlist Selection</span>
                   </button>
                 </div>
               </div>

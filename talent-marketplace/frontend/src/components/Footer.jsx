@@ -153,6 +153,12 @@ export default function Footer() {
           </div>
         </div>
 
+        <p className="pt-6 text-[11px] font-mono text-zinc-500 leading-relaxed max-w-4xl">
+          Pageant, fashion-week and event names shown on this demonstration site are used for
+          illustration only. They do not imply endorsement by, or affiliation with, the franchise
+          owners or organisers named. All talent profiles are fictional demonstration data.
+        </p>
+
         {/* Bottom Bar */}
         <div className="pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
           <p>

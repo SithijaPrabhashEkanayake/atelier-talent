@@ -195,13 +195,18 @@ exports.getPublicShowcase = async (req, res) => {
           isVerified: 1,
           heightCm: 1,
           measurements: 1,
+          skills: 1,
+          experience: 1,
         },
       },
     ]);
 
     const withThumbnails = await Promise.all(
       profiles.map(async (p) => {
-        const item = await PortfolioItem.findOne({ modelProfileId: p._id }).sort({ sortOrder: 1 });
+        const [item, portfolioCount] = await Promise.all([
+          PortfolioItem.findOne({ modelProfileId: p._id }).sort({ sortOrder: 1 }),
+          PortfolioItem.countDocuments({ modelProfileId: p._id }),
+        ]);
         return {
           id: p._id,
           fullName: p.fullName,
@@ -210,6 +215,9 @@ exports.getPublicShowcase = async (req, res) => {
           isVerified: p.isVerified,
           heightCm: p.heightCm,
           measurements: p.measurements,
+          experienceCount: (p.experience || []).length,
+          skillCount: (p.skills || []).length,
+          portfolioCount,
           thumbnailUrl: item?.thumbnailUrl || null,
         };
       }),

@@ -11,7 +11,7 @@ export default function ParallaxBanner({
   primaryCtaLink = '/castings',
   secondaryCtaText = 'Discover Talent',
   secondaryCtaLink = '/search',
-  backgroundImage = 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1800&auto=format&fit=crop',
+  backgroundImage = 'https://images.unsplash.com/photo-1684082744089-c3b5bdb7db8c?q=80&w=1800&auto=format&fit=crop',
 }) {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({

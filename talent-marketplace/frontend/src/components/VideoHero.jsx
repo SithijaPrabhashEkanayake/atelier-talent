@@ -1,57 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, Volume2, VolumeX } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 
 export default function VideoHero() {
   const { isAuthenticated } = useAuthStore();
-  const [isMuted, setIsMuted] = useState(true);
 
-  // High-fashion stock video reel (royalty-free CDN high-quality fashion runway loop)
-  const videoUrl =
-    'https://assets.mixkit.co/videos/preview/mixkit-fashion-model-in-a-runway-show-34351-large.mp4';
-  const fallbackPoster =
-    'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1920&auto=format&fit=crop';
+  // Sri Lankan editorial still, replacing a stock runway reel of a non-Sri-Lankan model.
+  const heroImage =
+    'https://images.unsplash.com/photo-1779323539375-cd7191db7e81?q=80&w=1920&auto=format&fit=crop';
 
   return (
     <section className="theme-invariant relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#09090b]">
-      {/* Background Video Reel */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted={isMuted}
-          playsInline
-          poster={fallbackPoster}
-          className="w-full h-full object-cover object-center opacity-40 scale-105 filter brightness-90 contrast-110 transition-transform duration-1000"
-        >
-          <source src={videoUrl} type="video/mp4" />
-          {/* Fallback image if video is not supported */}
-          <img
-            src={fallbackPoster}
-            alt="High Fashion Model"
-            className="w-full h-full object-cover"
-          />
-        </video>
+        <img
+          src={heroImage}
+          alt="Model in a white gown on a beach"
+          className="w-full h-full object-cover object-[center_30%] opacity-60 scale-100 filter brightness-100 contrast-105"
+        />
 
         {/* Ambient Dark & Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/60 to-black/80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/55 to-black/60" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent pointer-events-none" />
-      </div>
-
-      {/* Floating Audio / Video Control */}
-      <div className="absolute top-6 right-6 z-20 hidden md:flex items-center gap-2">
-        <button
-          onClick={() => setIsMuted(!isMuted)}
-          className="p-2.5 rounded-full bg-black/40 hover:bg-black/70 text-zinc-300 hover:text-amber-400 border border-white/10 backdrop-blur-md transition-all text-xs flex items-center gap-1.5"
-          title={isMuted ? 'Unmute Ambient Sound' : 'Mute Sound'}
-        >
-          {isMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
-          <span className="text-[11px] font-mono tracking-wider">
-            {isMuted ? 'SOUND OFF' : 'SOUND ON'}
-          </span>
-        </button>
       </div>
 
       {/* Hero Content Container */}

@@ -88,6 +88,8 @@ app.use(
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
+app.get('/api/stats', require('./controllers/statsController').getPlatformStats);
+
 app.use('/api/profiles', require('./routes/profileRoutes'));
 app.use('/api/portfolio', require('./routes/portfolioRoutes'));
 app.use('/api/castings', require('./routes/castingRoutes'));

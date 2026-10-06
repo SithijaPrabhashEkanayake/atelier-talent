@@ -101,12 +101,16 @@ exports.searchTalent = async (req, res) => {
     // to render a blank/placeholder box for every single result.
     const enrichedProfiles = await Promise.all(
       profiles.map(async (profile) => {
-        const item = await PortfolioItem.findOne({ modelProfileId: profile._id }).sort({
-          sortOrder: 1,
-        });
+        const [item, portfolioCount] = await Promise.all([
+          PortfolioItem.findOne({ modelProfileId: profile._id }).sort({ sortOrder: 1 }),
+          PortfolioItem.countDocuments({ modelProfileId: profile._id }),
+        ]);
         return {
           ...profile,
           derivedExperienceLevel: deriveExperienceLevel((profile.experience || []).length),
+          experienceCount: (profile.experience || []).length,
+          skillCount: (profile.skills || []).length,
+          portfolioCount,
           thumbnailUrl: item?.thumbnailUrl || null,
         };
       }),

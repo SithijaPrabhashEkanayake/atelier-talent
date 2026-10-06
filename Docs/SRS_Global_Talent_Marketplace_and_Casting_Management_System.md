@@ -148,6 +148,7 @@ A high-level summary of major functions (fully detailed in Section 3):
 - Third-party cloud services (hosting, storage, database) remain available and within free/low-tier usage limits during prototype evaluation.
 - Data submitted by users is assumed accurate at the point of entry, subject to administrative verification.
 - The matching/recommendation algorithm depends on sufficiently completed profile and casting-call data to produce meaningful results.
+- **Demonstration data and third-party names.** Talent profiles, organisations and contact details in the demonstration database are fictional. Pageant franchise and fashion-week names (for example Miss Universe, Miss World, Miss Earth, Miss Grand, Colombo Fashion Week) are used as organiser labels for illustration only. They do not imply endorsement by, or affiliation with, the franchise owners or organisers. Production use would require licences or written permission for any third-party names used.
 
 ---
 
