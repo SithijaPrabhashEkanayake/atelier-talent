@@ -79,7 +79,12 @@ const authRateLimiter = createRateLimiter({
   max: 10, // matches Docs/Security_Data_Protection_Policy.md's documented rate limit
   message: 'Too many auth attempts, please try again in a few minutes.',
 });
-app.use('/api/auth', authRateLimiter);
+// Session checks (/auth/me, /auth/refresh) run on every page load and must not
+// count toward the brute-force budget, or normal browsing locks people out.
+app.use(
+  ['/api/auth/login', '/api/auth/register', '/api/auth/forgot-password', '/api/auth/reset-password'],
+  authRateLimiter,
+);
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));

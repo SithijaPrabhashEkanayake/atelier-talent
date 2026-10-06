@@ -1,6 +1,7 @@
 const ModelProfile = require('../models/ModelProfile');
 const PortfolioItem = require('../models/PortfolioItem');
 const { parsePagination } = require('../utils/pagination');
+const { priorityRankStage, escapeRegex } = require('../utils/regionPriority');
 
 // ModelProfile has no direct experience-level field, so we derive a coarse
 // level from the length of its `experience` array (each entry is one prior
@@ -25,18 +26,9 @@ exports.searchTalent = async (req, res) => {
       req.query;
     const { page, limit, skip } = parsePagination(req.query);
 
-    if (!country) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          errorCode: 'VALIDATION_ERROR',
-          message: 'Country is required for search',
-        });
-    }
+    const query = { isPublished: true };
 
-    const query = { isPublished: true, country };
-
+    if (country) query.country = { $regex: `^${escapeRegex(country.trim())}$`, $options: 'i' };
     if (category) query.category = category;
 
     // Height filtering
@@ -91,7 +83,14 @@ exports.searchTalent = async (req, res) => {
       }
     }
 
-    const profiles = await ModelProfile.find(query).limit(limit).skip(skip).exec();
+    const profiles = await ModelProfile.aggregate([
+      { $match: query },
+      priorityRankStage,
+      { $sort: { _priorityRank: 1, _id: 1 } },
+      { $skip: skip },
+      { $limit: limit },
+      { $project: { _priorityRank: 0 } },
+    ]);
 
     const count = await ModelProfile.countDocuments(query);
 
@@ -102,13 +101,14 @@ exports.searchTalent = async (req, res) => {
     // to render a blank/placeholder box for every single result.
     const enrichedProfiles = await Promise.all(
       profiles.map(async (profile) => {
-        const plain = profile.toObject();
-        plain.derivedExperienceLevel = deriveExperienceLevel((profile.experience || []).length);
         const item = await PortfolioItem.findOne({ modelProfileId: profile._id }).sort({
           sortOrder: 1,
         });
-        plain.thumbnailUrl = item?.thumbnailUrl || null;
-        return plain;
+        return {
+          ...profile,
+          derivedExperienceLevel: deriveExperienceLevel((profile.experience || []).length),
+          thumbnailUrl: item?.thumbnailUrl || null,
+        };
       }),
     );
 

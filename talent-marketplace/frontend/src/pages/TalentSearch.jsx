@@ -18,93 +18,49 @@ import Carousel from '../components/Carousel';
 import MediaLightbox from '../components/MediaLightbox';
 import useCompareStore from '../store/compareStore';
 
-// Editorial fallback profiles if API is empty
-const defaultProfiles = [
-  {
-    _id: 'd1',
-    id: 'd1',
-    fullName: 'Elena Rostova',
-    category: 'runway',
-    country: 'France',
-    heightCm: 180,
-    experience: 'Professional',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 86, waist: 60, hips: 89 },
-    eyeColor: 'Hazel',
-  },
-  {
-    _id: 'd2',
-    id: 'd2',
-    fullName: 'Marcus Vance',
-    category: 'editorial',
-    country: 'United Kingdom',
-    heightCm: 188,
-    experience: 'Professional',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 98, waist: 76, hips: 94 },
-    eyeColor: 'Blue',
-  },
-  {
-    _id: 'd3',
-    id: 'd3',
-    fullName: 'Ananya Senanayake',
-    category: 'pageant',
-    country: 'Sri Lanka',
-    heightCm: 177,
-    experience: 'Lead Titleholder',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 88, waist: 62, hips: 91 },
-    eyeColor: 'Dark Brown',
-  },
-  {
-    _id: 'd4',
-    id: 'd4',
-    fullName: 'Kenji Takahashi',
-    category: 'commercial',
-    country: 'Japan',
-    heightCm: 185,
-    experience: 'Experienced',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 96, waist: 75, hips: 93 },
-    eyeColor: 'Black',
-  },
-  {
-    _id: 'd5',
-    id: 'd5',
-    fullName: 'Amara Diop',
-    category: 'runway',
-    country: 'Senegal',
-    heightCm: 182,
-    experience: 'Professional',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 84, waist: 59, hips: 88 },
-    eyeColor: 'Brown',
-  },
-  {
-    _id: 'd6',
-    id: 'd6',
-    fullName: 'Sofia Al-Mansoor',
-    category: 'editorial',
-    country: 'United Arab Emirates',
-    heightCm: 176,
-    experience: 'Professional',
-    isVerified: true,
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=800&auto=format&fit=crop',
-    measurements: { bust: 87, waist: 61, hips: 90 },
-    eyeColor: 'Green',
-  },
+const COUNTRY_OPTIONS = ['Sri Lanka'];
+
+const DISCIPLINE_OPTIONS = [
+  { value: 'runway', label: 'Runway & Couture' },
+  { value: 'commercial', label: 'Commercial Campaign' },
+  { value: 'editorial', label: 'High Fashion Editorial' },
+  { value: 'pageant', label: 'Pageant Titleholder' },
 ];
+
+const AGE_RANGE_OPTIONS = [
+  { value: '18-25', label: '18 – 25' },
+  { value: '26-35', label: '26 – 35' },
+];
+
+const HEIGHT_RANGE_OPTIONS = [
+  { value: '160-170', label: '160 – 170 cm' },
+  { value: '171-180', label: '171 – 180 cm' },
+  { value: '181-195', label: '181 – 195 cm' },
+];
+
+const EMPTY_FILTERS = {
+  country: '',
+  category: '',
+  ageRange: '',
+  heightRange: '',
+};
+
+const buildSearchParams = (filters) => {
+  const params = new URLSearchParams();
+  if (filters.country) params.set('country', filters.country);
+  if (filters.category) params.set('category', filters.category);
+  if (filters.ageRange) {
+    const [minAge, maxAge] = filters.ageRange.split('-');
+    params.set('minAge', minAge);
+    params.set('maxAge', maxAge);
+  }
+  if (filters.heightRange) {
+    const [minHeightCm, maxHeightCm] = filters.heightRange.split('-');
+    params.set('minHeightCm', minHeightCm);
+    params.set('maxHeightCm', maxHeightCm);
+  }
+  return params;
+};
 
 function ResultSkeleton() {
   return (
@@ -119,93 +75,56 @@ function ResultSkeleton() {
 }
 
 export default function TalentSearch() {
-  const [filters, setFilters] = useState({
-    country: '',
-    category: '',
-    minAge: '',
-    maxAge: '',
-    minHeightCm: '',
-    maxHeightCm: '',
-  });
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
 
   const { selectedTalents, openCompare, openBudgetModal, openCommandPalette } = useCompareStore();
-  const [results, setResults] = useState(defaultProfiles);
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'carousel'
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  // Initial load: Fetch showcase models so the page is never blank
+  // Public featured list shown until the first filtered search runs.
   useEffect(() => {
     api
       .get('/profiles/showcase')
-      .then((res) => {
-        if (res.data.data && res.data.data.length > 0) {
-          setResults(res.data.data);
-        }
-      })
+      .then((res) => setResults(res.data.data || []))
       .catch(() => {});
   }, []);
 
-  const handleSearch = async (e) => {
-    if (e) e.preventDefault();
+  const runSearch = async (nextFilters) => {
     setError('');
     setLoading(true);
-
     try {
-      const params = new URLSearchParams();
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value) params.append(key, value);
-      });
-
-      const res = await api.get(`/search/talent?${params.toString()}`);
-      if (res.data.data) {
-        setResults(res.data.data);
-      }
-    } catch {
-      // Graceful fallback: client-side filtering on default profiles
-      const clientFiltered = defaultProfiles.filter((p) => {
-        if (filters.country && !p.country.toLowerCase().includes(filters.country.toLowerCase()))
-          return false;
-        if (filters.category && p.category.toLowerCase() !== filters.category.toLowerCase())
-          return false;
-        if (filters.minHeightCm && p.heightCm < Number(filters.minHeightCm)) return false;
-        if (filters.maxHeightCm && p.heightCm > Number(filters.maxHeightCm)) return false;
-        return true;
-      });
-      setResults(clientFiltered);
+      const res = await api.get(`/search/talent?${buildSearchParams(nextFilters)}`);
+      setResults(res.data.data || []);
+    } catch (err) {
+      setResults([]);
+      setError(
+        err.response?.status === 403 || err.response?.status === 401
+          ? 'Talent search is available to casting and pageant organizers.'
+          : 'Could not load talent right now. Please try again.',
+      );
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSearch = (e) => {
+    if (e) e.preventDefault();
+    runSearch(filters);
+  };
+
   const handleCategoryQuickFilter = (cat) => {
-    const nextCategory = filters.category === cat ? '' : cat;
-    setFilters({ ...filters, category: nextCategory });
-    setTimeout(() => {
-      const params = new URLSearchParams();
-      if (filters.country) params.append('country', filters.country);
-      if (nextCategory) params.append('category', nextCategory);
-      api
-        .get(`/search/talent?${params.toString()}`)
-        .then((res) => setResults(res.data.data || []))
-        .catch(() => {
-          setResults(defaultProfiles.filter((p) => !nextCategory || p.category === nextCategory));
-        });
-    }, 50);
+    const nextFilters = { ...filters, category: filters.category === cat ? '' : cat };
+    setFilters(nextFilters);
+    runSearch(nextFilters);
   };
 
   const resetFilters = () => {
-    setFilters({
-      country: '',
-      category: '',
-      minAge: '',
-      maxAge: '',
-      minHeightCm: '',
-      maxHeightCm: '',
-    });
-    setResults(defaultProfiles);
+    setFilters(EMPTY_FILTERS);
+    runSearch(EMPTY_FILTERS);
   };
 
   const openLightbox = (index) => {
@@ -369,14 +288,21 @@ export default function TalentSearch() {
                 >
                   <MapPin size={11} className="text-amber-400" /> Country
                 </label>
-                <input
+                <select
                   id="search-country"
-                  type="text"
                   value={filters.country}
                   onChange={(e) => setFilters({ ...filters, country: e.target.value })}
-                  className="w-full rounded-xl bg-zinc-950 border border-white/10 px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-amber-400 transition-colors"
-                  placeholder="e.g. France, Sri Lanka, Japan"
-                />
+                  className="w-full rounded-xl bg-zinc-950 border border-white/10 px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition-colors cursor-pointer"
+                >
+                  <option value="" className="bg-zinc-900 text-zinc-200">
+                    Any country
+                  </option>
+                  {COUNTRY_OPTIONS.map((c) => (
+                    <option key={c} value={c} className="bg-zinc-900 text-zinc-200">
+                      {c}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -395,91 +321,60 @@ export default function TalentSearch() {
                   <option value="" className="bg-zinc-900 text-zinc-200">
                     Any Discipline
                   </option>
-                  <option value="runway" className="bg-zinc-900 text-zinc-200">
-                    Runway & Couture
-                  </option>
-                  <option value="commercial" className="bg-zinc-900 text-zinc-200">
-                    Commercial Campaign
-                  </option>
-                  <option value="editorial" className="bg-zinc-900 text-zinc-200">
-                    High Fashion Editorial
-                  </option>
-                  <option value="pageant" className="bg-zinc-900 text-zinc-200">
-                    Pageant Titleholder
-                  </option>
+                  {DISCIPLINE_OPTIONS.map((d) => (
+                    <option key={d.value} value={d.value} className="bg-zinc-900 text-zinc-200">
+                      {d.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 
-              {/* Age Range */}
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label
-                    htmlFor="search-minAge"
-                    className="block text-[11px] font-mono uppercase tracking-wider text-zinc-300 mb-1"
-                  >
-                    Min Age
-                  </label>
-                  <input
-                    id="search-minAge"
-                    type="number"
-                    value={filters.minAge}
-                    onChange={(e) => setFilters({ ...filters, minAge: e.target.value })}
-                    className="w-full rounded-xl bg-zinc-950 border border-white/10 px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-                    placeholder="18"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="search-maxAge"
-                    className="block text-[11px] font-mono uppercase tracking-wider text-zinc-300 mb-1"
-                  >
-                    Max Age
-                  </label>
-                  <input
-                    id="search-maxAge"
-                    type="number"
-                    value={filters.maxAge}
-                    onChange={(e) => setFilters({ ...filters, maxAge: e.target.value })}
-                    className="w-full rounded-xl bg-zinc-950 border border-white/10 px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-                    placeholder="35"
-                  />
-                </div>
+              <div>
+                <label
+                  htmlFor="search-ageRange"
+                  className="block text-xs font-mono uppercase tracking-wider text-zinc-300 mb-1"
+                >
+                  Age
+                </label>
+                <select
+                  id="search-ageRange"
+                  value={filters.ageRange}
+                  onChange={(e) => setFilters({ ...filters, ageRange: e.target.value })}
+                  className="w-full rounded-xl bg-zinc-950 border border-white/10 px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition-colors cursor-pointer"
+                >
+                  <option value="" className="bg-zinc-900 text-zinc-200">
+                    Any age
+                  </option>
+                  {AGE_RANGE_OPTIONS.map((a) => (
+                    <option key={a.value} value={a.value} className="bg-zinc-900 text-zinc-200">
+                      {a.label}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              {/* Height Range */}
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label
-                    htmlFor="search-minHeightCm"
-                    className="block text-[11px] font-mono uppercase tracking-wider text-zinc-300 mb-1"
-                  >
-                    Min Ht (cm)
-                  </label>
-                  <input
-                    id="search-minHeightCm"
-                    type="number"
-                    value={filters.minHeightCm}
-                    onChange={(e) => setFilters({ ...filters, minHeightCm: e.target.value })}
-                    className="w-full rounded-xl bg-zinc-950 border border-white/10 px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-                    placeholder="170"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="search-maxHeightCm"
-                    className="block text-[11px] font-mono uppercase tracking-wider text-zinc-300 mb-1"
-                  >
-                    Max Ht (cm)
-                  </label>
-                  <input
-                    id="search-maxHeightCm"
-                    type="number"
-                    value={filters.maxHeightCm}
-                    onChange={(e) => setFilters({ ...filters, maxHeightCm: e.target.value })}
-                    className="w-full rounded-xl bg-zinc-950 border border-white/10 px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-                    placeholder="195"
-                  />
-                </div>
+              <div>
+                <label
+                  htmlFor="search-heightRange"
+                  className="block text-xs font-mono uppercase tracking-wider text-zinc-300 mb-1"
+                >
+                  Height
+                </label>
+                <select
+                  id="search-heightRange"
+                  value={filters.heightRange}
+                  onChange={(e) => setFilters({ ...filters, heightRange: e.target.value })}
+                  className="w-full rounded-xl bg-zinc-950 border border-white/10 px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition-colors cursor-pointer"
+                >
+                  <option value="" className="bg-zinc-900 text-zinc-200">
+                    Any height
+                  </option>
+                  {HEIGHT_RANGE_OPTIONS.map((h) => (
+                    <option key={h.value} value={h.value} className="bg-zinc-900 text-zinc-200">
+                      {h.label}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <button

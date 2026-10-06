@@ -3,6 +3,7 @@ const IndustryProfile = require('../models/IndustryProfile');
 const PageantOrgProfile = require('../models/PageantOrgProfile');
 const PortfolioItem = require('../models/PortfolioItem');
 const { parsePagination } = require('../utils/pagination');
+const { priorityRankStage } = require('../utils/regionPriority');
 
 // Helper function to get the correct model based on user role
 const getProfileModel = (role) => {
@@ -181,10 +182,22 @@ exports.getProfileById = async (req, res) => {
 // verified badge, one thumbnail). No email, measurements, or DOB.
 exports.getPublicShowcase = async (req, res) => {
   try {
-    const profiles = await ModelProfile.find({ isPublished: true })
-      .sort({ isVerified: -1, createdAt: -1 })
-      .limit(8)
-      .select('fullName country category isVerified heightCm measurements');
+    const profiles = await ModelProfile.aggregate([
+      { $match: { isPublished: true } },
+      priorityRankStage,
+      { $sort: { _priorityRank: 1, isVerified: -1, createdAt: -1, _id: 1 } },
+      { $limit: 8 },
+      {
+        $project: {
+          fullName: 1,
+          country: 1,
+          category: 1,
+          isVerified: 1,
+          heightCm: 1,
+          measurements: 1,
+        },
+      },
+    ]);
 
     const withThumbnails = await Promise.all(
       profiles.map(async (p) => {

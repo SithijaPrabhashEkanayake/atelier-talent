@@ -4,6 +4,7 @@ const PageantOrgProfile = require('../models/PageantOrgProfile');
 const Application = require('../models/Application');
 const { computeMatchScore } = require('../utils/matchScore');
 const { parsePagination } = require('../utils/pagination');
+const { priorityRankStage } = require('../utils/regionPriority');
 
 // Fields a creator may edit on their own casting call. Ownership
 // (creatorProfileId/creatorType) and lifecycle (status) are deliberately
@@ -98,11 +99,14 @@ exports.getCastingCalls = async (req, res) => {
     // them); everyone else never sees them at all.
     if (req.user?.role !== 'admin') query.isRemovedByAdmin = { $ne: true };
 
-    const castings = await CastingCall.find(query)
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .skip(skip)
-      .exec();
+    const castings = await CastingCall.aggregate([
+      { $match: query },
+      priorityRankStage,
+      { $sort: { _priorityRank: 1, createdAt: -1, _id: 1 } },
+      { $skip: skip },
+      { $limit: limit },
+      { $project: { _priorityRank: 0 } },
+    ]);
 
     const count = await CastingCall.countDocuments(query);
 

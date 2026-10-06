@@ -105,13 +105,14 @@ describe('Talent Search API — multi-attribute filtering & RBAC protection', ()
     expect(res.statusCode).toBe(403);
   });
 
-  it('returns 400 validation error if country is missing', async () => {
+  it('returns published profiles across all countries when country is omitted', async () => {
     const res = await request(app)
       .get('/api/search/talent')
       .set('Authorization', `Bearer ${scoutToken}`);
 
-    expect(res.statusCode).toBe(400);
-    expect(res.body.errorCode).toBe('VALIDATION_ERROR');
+    expect(res.statusCode).toBe(200);
+    expect(res.body.data.length).toBeGreaterThan(0);
+    expect(res.body.data.every((p) => p.isPublished)).toBe(true);
   });
 
   it('allows recruiter to search talent directory by country and only returns published profiles', async () => {
