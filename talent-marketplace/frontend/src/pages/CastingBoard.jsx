@@ -112,20 +112,55 @@ export default function CastingBoard() {
   const [loadError, setLoadError] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const PAGE_SIZE = 12;
+
+  const fetchPage = async (pageNumber, category, append) => {
+    const params = { page: pageNumber, limit: PAGE_SIZE };
+    if (category !== 'all') params.category = category;
+    const res = await api.get('/castings', { params });
+    const data = res.data.data || [];
+    setCastings((prev) => (append ? [...prev, ...data] : data));
+    setPage(pageNumber);
+    setTotalItems(res.data.meta?.totalItems ?? data.length);
+    setTotalPages(res.data.meta?.totalPages ?? 1);
+  };
 
   useEffect(() => {
-    const fetchCastings = async () => {
+    let ignore = false;
+    const load = async () => {
+      setLoading(true);
+      setLoadError('');
       try {
-        const res = await api.get('/castings', { params: { limit: 100 } });
-        setCastings(res.data.data || []);
+        await fetchPage(1, selectedCategory, false);
       } catch {
-        setLoadError('Castings could not be loaded. Please refresh the page.');
+        if (!ignore) setLoadError('Castings could not be loaded. Please refresh the page.');
       } finally {
-        setLoading(false);
+        if (!ignore) setLoading(false);
       }
     };
-    fetchCastings();
-  }, []);
+    load();
+    return () => {
+      ignore = true;
+    };
+    // fetchPage only reads state setters and constants, so it is safe to omit
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategory]);
+
+  const loadMore = async () => {
+    setLoadingMore(true);
+    setLoadError('');
+    try {
+      await fetchPage(page + 1, selectedCategory, true);
+    } catch {
+      setLoadError('More castings could not be loaded. Please try again.');
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   const categories = [
     { id: 'all', label: 'All Opportunities' },
@@ -135,10 +170,7 @@ export default function CastingBoard() {
     { id: 'pageant', label: 'Pageants' },
   ];
 
-  const filteredCastings =
-    selectedCategory === 'all'
-      ? castings
-      : castings.filter((c) => c.category?.toLowerCase() === selectedCategory);
+  const filteredCastings = castings;
 
   const canPostCasting =
     user?.role === 'industry_professional' ||
@@ -291,6 +323,29 @@ export default function CastingBoard() {
             );
           })}
         </div>
+
+        {!loading && filteredCastings.length > 0 && (
+          <div className="flex flex-col items-center gap-4 mt-12">
+            <p className="text-xs font-mono text-zinc-500">
+              Showing {castings.length} of {totalItems} castings
+            </p>
+            {page < totalPages && (
+              <button
+                type="button"
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="btn-gold !text-xs !py-3 !px-6 disabled:opacity-60 cursor-pointer"
+              >
+                {loadingMore ? 'Loading…' : 'Load more castings'}
+              </button>
+            )}
+            {loadError && (
+              <p role="alert" className="text-xs text-rose-400">
+                {loadError}
+              </p>
+            )}
+          </div>
+        )}
 
         {!loading && filteredCastings.length === 0 && (
           <div className="flex flex-col items-center justify-center py-24 glass-dark rounded-3xl border border-white/10 text-center px-4">
