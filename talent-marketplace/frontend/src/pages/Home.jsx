@@ -477,9 +477,9 @@ function LiveCastingSection() {
       criteria: 'Fine features · International look',
     },
     {
-      title: 'Miss Global Universe National Delegate Audition',
-      org: 'Global Pageant Franchise',
-      country: 'International',
+      title: 'Miss Universe — National Delegate Audition',
+      org: 'Miss Universe',
+      country: 'Sri Lanka',
       category: 'Pageant',
       compensation: 'Crown & Travel Grant',
       deadline: 'Nov 18, 2026',

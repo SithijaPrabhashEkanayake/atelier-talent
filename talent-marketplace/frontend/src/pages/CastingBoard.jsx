@@ -54,7 +54,7 @@ const curatedCastingFallbacks = [
   },
   {
     _id: 'c4',
-    title: 'Miss Global Pageant 2026 National Auditions',
+    title: 'Miss Earth — National Auditions 2026',
     description:
       'Official delegate search for the upcoming international pageant. Seeking articulate, poised candidates with leadership and public presentation background.',
     category: 'pageant',

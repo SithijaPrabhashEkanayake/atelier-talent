@@ -23,6 +23,7 @@ const User = require('../models/User');
 const ModelProfile = require('../models/ModelProfile');
 const IndustryProfile = require('../models/IndustryProfile');
 const PageantOrgProfile = require('../models/PageantOrgProfile');
+const PAGEANT_NAMES = require('./pageant-names');
 const PortfolioItem = require('../models/PortfolioItem');
 const CastingCall = require('../models/CastingCall');
 const Application = require('../models/Application');
@@ -211,16 +212,16 @@ const ORGANIZERS = [
 
 const PAGEANTS = [
   {
-    org: 'Miss Island Pageant Org',
+    org: PAGEANT_NAMES[2],
     country: 'Sri Lanka',
     status: 'Sanctioned national pageant, est. 2010',
-    seed: 'missisland',
+    seed: 'missuniverse',
   },
   {
-    org: 'Golden Crown Pageants Asia',
-    country: 'India',
+    org: PAGEANT_NAMES[0],
+    country: 'Sri Lanka',
     status: 'Regional pageant circuit covering 6 countries',
-    seed: 'goldencrown',
+    seed: 'missgrand',
   },
 ];
 
@@ -262,7 +263,7 @@ const CASTINGS = [
     days: 10,
   },
   {
-    title: 'National Pageant — Preliminary Round',
+    title: `${PAGEANT_NAMES[2]} — Preliminary Round`,
     country: 'Sri Lanka',
     category: 'pageant',
     desc: 'Open call for preliminary round contestants. Evening wear + interview segment.',

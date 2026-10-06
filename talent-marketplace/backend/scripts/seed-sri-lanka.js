@@ -21,6 +21,7 @@ const User = require('../models/User');
 const ModelProfile = require('../models/ModelProfile');
 const IndustryProfile = require('../models/IndustryProfile');
 const PageantOrgProfile = require('../models/PageantOrgProfile');
+const PAGEANT_NAMES = require('./pageant-names');
 const PortfolioItem = require('../models/PortfolioItem');
 const CastingCall = require('../models/CastingCall');
 const Application = require('../models/Application');
@@ -136,9 +137,6 @@ const ORG_TYPES = [
   { type: 'photographer', suffixes: PHOTO_SUFFIXES },
   { type: 'director', suffixes: DIRECTOR_SUFFIXES },
 ];
-const PAGEANT_ADJECTIVES = ['Elegance', 'Grace', 'Elite', 'Glamour', 'Crown', 'Radiance', 'Prestige', 'Charisma'];
-const PAGEANT_TITLES = ['Miss', 'Mr.', 'Miss Teen', 'Mrs.'];
-const PAGEANT_THEMES = ['Pearl Island', 'Serendib', 'Ceylon', 'Emerald Isle', 'Golden Coast'];
 
 const usedOrgNames = new Set();
 function uniqueOrgName(city, suffixes) {
@@ -153,19 +151,6 @@ function uniqueOrgName(city, suffixes) {
     tries++;
   } while (usedOrgNames.has(name) && tries < 50);
   usedOrgNames.add(name + Math.random()); // allow repeats after 50 tries without infinite loop, still unique key
-  return name;
-}
-const usedPageantNames = new Set();
-function uniquePageantName() {
-  let name;
-  do {
-    const title = randomPick(PAGEANT_TITLES);
-    const style = randomPick(['city', 'theme']);
-    const noun = style === 'city' ? randomCity() : randomPick(PAGEANT_THEMES);
-    const adjective = randomPick(PAGEANT_ADJECTIVES);
-    name = `${title} ${noun} ${adjective}`;
-  } while (usedPageantNames.has(name));
-  usedPageantNames.add(name);
   return name;
 }
 
@@ -318,7 +303,7 @@ const seedSL = async () => {
     for (let i = 0; i < COUNT_PER_ROLE; i++) {
       const email = nextEmail('pageant');
       pageantUserDocs.push({ email, password: passwordHash, role: 'pageant_organizer' });
-      pageantMeta.push({ email, org: uniquePageantName(), year: randomInt(2010, 2025) });
+      pageantMeta.push({ email, org: PAGEANT_NAMES[i % PAGEANT_NAMES.length], year: randomInt(2010, 2025) });
     }
     const createdPageantUsers = await User.insertMany(pageantUserDocs, { ordered: true });
     const pageantProfileDocs = createdPageantUsers.map((user, i) => {

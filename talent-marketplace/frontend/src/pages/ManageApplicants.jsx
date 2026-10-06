@@ -39,21 +39,27 @@ export default function ManageApplicants() {
   const [inspectingApp, setInspectingApp] = useState(null);
 
   useEffect(() => {
+    let ignore = false;
     const fetchData = async () => {
       try {
         const [castRes, appRes] = await Promise.all([
           api.get(`/castings/${id}`),
           api.get(`/castings/${id}/applicants`),
         ]);
-        setCasting(castRes.data.data);
-        setApplicants(appRes.data.data);
+        if (!ignore) {
+          setCasting(castRes.data.data);
+          setApplicants(appRes.data.data);
+        }
       } catch (err) {
-        console.error(err);
+        if (!ignore) console.error(err);
       } finally {
-        setLoading(false);
+        if (!ignore) setLoading(false);
       }
     };
     fetchData();
+    return () => {
+      ignore = true;
+    };
   }, [id]);
 
   const handleStatusChange = async (applicationId, newStatus) => {

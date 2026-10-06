@@ -29,17 +29,23 @@ export default function CastingDetail() {
   const [closeError, setCloseError] = useState('');
 
   useEffect(() => {
+    let ignore = false;
+    setCasting(null);
+    setLoading(true);
     const fetchCasting = async () => {
       try {
         const res = await api.get(`/castings/${id}`);
-        setCasting(res.data.data);
+        if (!ignore) setCasting(res.data.data);
       } catch (err) {
-        console.error('Failed to load casting', err);
+        if (!ignore) console.error('Failed to load casting', err);
       } finally {
-        setLoading(false);
+        if (!ignore) setLoading(false);
       }
     };
     fetchCasting();
+    return () => {
+      ignore = true;
+    };
   }, [id]);
 
   useEffect(() => {

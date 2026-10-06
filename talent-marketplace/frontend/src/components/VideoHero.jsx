@@ -138,7 +138,7 @@ export default function VideoHero() {
                 🔥 <b>Colombo Fashion Week Lead</b> · Sri Lanka
               </span>
               <span className="bg-white/5 px-3 py-1 rounded-full border border-white/5 hover:border-amber-400/40 transition-colors">
-                👑 <b>Miss Global Pageant Rep</b> · Tokyo
+                👑 <b>Miss Universe Delegate</b> · Colombo
               </span>
             </div>
 
