@@ -42,23 +42,8 @@ if (process.env.NODE_ENV === 'production') {
 const DEMO_EMAIL_SUFFIX = '@demo.talent';
 const DEMO_PASSWORD = 'Password123'; // meets the 8+ char, letter+number policy
 
-// i.pravatar.cc's `u=` hash picks a photo with zero regard for gender, so a
-// name-derived seed could (and did — see the female names showing up with
-// male stock photos in the live demo data) land on a mismatched photo.
-// xsgames.co/randomusers is the underlying asset set pravatar itself draws
-// from, but exposed here split into separate male/ and female/ folders
-// (indices 0-78 each) — hash the seed into that range so the photo is still
-// deterministic per-profile, but gender-correct.
-function hashToIndex(str, mod) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
-  }
-  return hash % mod;
-}
-const AVATAR_POOL_SIZE = 79;
-const img = (isFemale, seed) =>
-  `https://xsgames.co/randomusers/assets/avatars/${isFemale ? 'female' : 'male'}/${hashToIndex(seed, AVATAR_POOL_SIZE)}.jpg`;
+const { pickPhoto } = require('./sl-photos');
+const img = (isFemale, seed, width) => pickPhoto(isFemale, seed, width);
 
 const MODELS = [
   {
@@ -95,7 +80,7 @@ const MODELS = [
     height: 171,
     category: 'editorial',
     rep: 'agency_represented',
-    agency: 'South Asia Talent Group',
+    agency: 'Colombo Talent Group',
     skills: ['editorial', 'high fashion'],
     exp: 6,
     verified: true,
@@ -103,8 +88,8 @@ const MODELS = [
     isFemale: true,
   },
   {
-    fullName: 'Priya Jayasuriya',
-    country: 'India',
+    fullName: 'Sewwandi Jayasuriya',
+    country: 'Sri Lanka',
     dob: '2000-01-30',
     height: 170,
     category: 'pageant',
@@ -116,13 +101,13 @@ const MODELS = [
     isFemale: true,
   },
   {
-    fullName: 'Zara Khan',
-    country: 'India',
+    fullName: 'Shazna Balasuriya',
+    country: 'Sri Lanka',
     dob: '1998-05-18',
     height: 176,
     category: 'runway',
     rep: 'agency_represented',
-    agency: 'Mumbai Faces',
+    agency: 'Kandy Faces',
     skills: ['runway', 'couture'],
     exp: 5,
     verified: true,
@@ -130,8 +115,8 @@ const MODELS = [
     isFemale: true,
   },
   {
-    fullName: 'Liyana Rahman',
-    country: 'Philippines',
+    fullName: 'Nushra Rahman',
+    country: 'Sri Lanka',
     dob: '2002-09-09',
     height: 165,
     category: 'commercial',
@@ -156,13 +141,13 @@ const MODELS = [
     isFemale: false,
   },
   {
-    fullName: 'Sasha Wright',
-    country: 'United Kingdom',
+    fullName: 'Chamodi Fonseka',
+    country: 'Sri Lanka',
     dob: '1996-04-27',
     height: 178,
     category: 'runway',
     rep: 'agency_represented',
-    agency: 'London Runway Collective',
+    agency: 'Kandy Runway Collective',
     skills: ['runway', 'catwalk choreography'],
     exp: 7,
     verified: true,
@@ -185,7 +170,7 @@ const ORGANIZERS = [
     org: 'Lens & Light Studio',
     type: 'photographer',
     country: 'Sri Lanka',
-    desc: 'Editorial and commercial photography studio working with brands across South Asia.',
+    desc: 'Editorial and commercial photography studio working with brands across Sri Lanka.',
     site: 'https://lenslight.example.com',
     verified: false,
     seed: 'lenslight',
@@ -193,8 +178,8 @@ const ORGANIZERS = [
   {
     org: 'Horizon Talent Agency',
     type: 'agency',
-    country: 'India',
-    desc: 'Full-service talent agency representing models and actors across South Asia.',
+    country: 'Sri Lanka',
+    desc: 'Full-service talent agency representing models and actors across Sri Lanka.',
     site: 'https://horizontalent.example.com',
     verified: true,
     seed: 'horizon',
@@ -202,7 +187,7 @@ const ORGANIZERS = [
   {
     org: 'Reel Motion Productions',
     type: 'director',
-    country: 'Philippines',
+    country: 'Sri Lanka',
     desc: 'Commercial and music-video production house.',
     site: 'https://reelmotion.example.com',
     verified: false,
@@ -252,7 +237,7 @@ const CASTINGS = [
   },
   {
     title: 'Skincare Brand Commercial',
-    country: 'India',
+    country: 'Sri Lanka',
     category: 'commercial',
     desc: 'Lifestyle commercial shoot for a new skincare product line. Natural, approachable look.',
     minAge: 19,
@@ -288,7 +273,7 @@ const CASTINGS = [
   },
   {
     title: 'Music Video Casting — Lead Extra',
-    country: 'Philippines',
+    country: 'Sri Lanka',
     category: 'commercial',
     desc: 'Featured background talent for an upcoming music video production.',
     minAge: 18,
@@ -300,9 +285,9 @@ const CASTINGS = [
   },
   {
     title: 'Couture Runway — Winter Collection',
-    country: 'United Kingdom',
+    country: 'Sri Lanka',
     category: 'runway',
-    desc: 'London Fashion Week adjacent showcase for an emerging couture designer.',
+    desc: 'Colombo Fashion Week adjacent showcase for an emerging couture designer.',
     minAge: 18,
     maxAge: 30,
     minH: 173,
@@ -312,7 +297,7 @@ const CASTINGS = [
   },
   {
     title: 'Beauty Campaign — Closed Call',
-    country: 'Philippines',
+    country: 'Sri Lanka',
     category: 'commercial',
     desc: 'Already cast — kept here to demonstrate a closed casting call.',
     minAge: 18,
@@ -415,11 +400,8 @@ const seedDB = async () => {
           modelProfileId: profile._id,
           type: 'photo',
           category: [m.category, 'headshot', 'commercial'][k % 3],
-          // Same seed for both — xsgames.co serves one fixed 256x256 asset
-          // per index (no on-the-fly resizing like pravatar had), so the
-          // "thumbnail" is just the same photo rather than a smaller render.
-          mediaUrl: img(m.isFemale, `${m.seed}-${k}`),
-          thumbnailUrl: img(m.isFemale, `${m.seed}-${k}`),
+          mediaUrl: img(m.isFemale, `${m.seed}-${k}`, 800),
+          thumbnailUrl: img(m.isFemale, `${m.seed}-${k}`, 400),
           fileSizeBytes: 240000 + k * 10000,
           sortOrder: k,
         });

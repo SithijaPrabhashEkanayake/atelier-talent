@@ -37,23 +37,8 @@ const COUNT_PER_ROLE = parseInt(process.argv[2], 10) || 100;
 const EMAIL_SUFFIX = '@sl.demo.talent';
 const PASSWORD = 'Password123';
 
-// i.pravatar.cc's `u=` hash picks a photo with zero regard for gender, so a
-// seed derived from a model's name/index could (and did — see the female
-// names showing up with male stock photos in the live demo data) land on a
-// photo that doesn't match. xsgames.co/randomusers is the underlying asset
-// set pravatar itself draws from, but exposed here split into separate
-// male/ and female/ folders (indices 0-78 each) — hash the seed into that
-// range so the photo is still deterministic per-profile, but gender-correct.
-function hashToIndex(str, mod) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
-  }
-  return hash % mod;
-}
-const AVATAR_POOL_SIZE = 79;
-const img = (isFemale, seed) =>
-  `https://xsgames.co/randomusers/assets/avatars/${isFemale ? 'female' : 'male'}/${hashToIndex(seed, AVATAR_POOL_SIZE)}.jpg`;
+const { pickPhoto } = require('./sl-photos');
+const img = (isFemale, seed, width) => pickPhoto(isFemale, seed, width);
 
 // ---------------------------------------------------------------------------
 // Name pools (fictional combinatorics, not real individuals)
@@ -127,6 +112,23 @@ function randomDOB(minAge, maxAge) {
 }
 
 const CATEGORIES = ['runway', 'commercial', 'editorial', 'pageant'];
+// Every discipline × height range × age range combination the Talent Directory
+// offers, cycled through so each one is guaranteed at least one profile.
+const FILTER_COVERAGE = [];
+for (const category of CATEGORIES) {
+  for (const height of [
+    [160, 170],
+    [171, 180],
+    [181, 195],
+  ]) {
+    for (const age of [
+      [18, 25],
+      [26, 34],
+    ]) {
+      FILTER_COVERAGE.push({ category, height, age });
+    }
+  }
+}
 const AGENCY_SUFFIXES = ['Models', 'Talent Agency', 'Model Management', 'Creative Agency'];
 const BRAND_SUFFIXES = ['Fashion House', 'Apparel Co.', 'Couture', 'Studio', 'Label'];
 const PHOTO_SUFFIXES = ['Photography', 'Studios', 'Lens Collective', 'Visuals'];
@@ -192,9 +194,9 @@ const seedSL = async () => {
     const modelUserDocs = [];
     const modelMeta = [];
     for (let i = 0; i < COUNT_PER_ROLE; i++) {
-      const isFemale = Math.random() < 0.65; // skew toward the more common demo persona, still mixed
+      const slot = FILTER_COVERAGE[i % FILTER_COVERAGE.length];
+      const isFemale = i % 3 !== 0;
       const fullName = uniqueFullName(isFemale ? FEMALE_GIVEN : MALE_GIVEN);
-      const category = randomPick(CATEGORIES);
       const rep = Math.random() < 0.4 ? 'agency_represented' : 'freelance';
       const email = nextEmail('model');
       modelUserDocs.push({ email, password: passwordHash, role: 'model' });
@@ -202,10 +204,11 @@ const seedSL = async () => {
         email,
         fullName,
         city: randomCity(),
-        category,
+        category: slot.category,
         rep,
         isFemale,
-        height: isFemale ? randomInt(163, 180) : randomInt(175, 193),
+        height: randomInt(slot.height[0], slot.height[1]),
+        ageRange: slot.age,
         verified: Math.random() < 0.35,
         exp: randomInt(0, 8),
         seed: `model-${i}`,
@@ -219,7 +222,7 @@ const seedSL = async () => {
         userId: user._id,
         fullName: m.fullName,
         country: 'Sri Lanka',
-        dateOfBirth: randomDOB(18, 34),
+        dateOfBirth: randomDOB(m.ageRange[0], m.ageRange[1]),
         heightCm: m.height,
         measurements: {
           bust: randomInt(78, 96),
@@ -251,11 +254,8 @@ const seedSL = async () => {
           modelProfileId: profile._id,
           type: 'photo',
           category: [modelMeta[i].category, 'headshot', 'commercial'][k % 3],
-          // Same seed for both — xsgames.co serves one fixed 256x256 asset
-          // per index (no on-the-fly resizing like pravatar had), so the
-          // "thumbnail" is just the same photo rather than a smaller render.
-          mediaUrl: img(modelMeta[i].isFemale, `${modelMeta[i].seed}-${k}`),
-          thumbnailUrl: img(modelMeta[i].isFemale, `${modelMeta[i].seed}-${k}`),
+          mediaUrl: img(modelMeta[i].isFemale, `${modelMeta[i].seed}-${k}`, 800),
+          thumbnailUrl: img(modelMeta[i].isFemale, `${modelMeta[i].seed}-${k}`, 400),
           fileSizeBytes: 200000 + k * 15000,
           sortOrder: k,
         });
@@ -337,12 +337,15 @@ const seedSL = async () => {
     createdIndustryProfiles.forEach((profile, i) => {
       if (Math.random() > 0.4) return; // ~40% of industry pros have an open casting
       const city = industryMeta[i].city;
-      const category = randomPick(CATEGORIES.filter((c) => c !== 'pageant'));
+      const category = CATEGORIES[castingDocs.length % CATEGORIES.length];
       const days = randomInt(10, 45);
       castingDocs.push({
         creatorProfileId: profile._id,
         creatorType: 'industry_professional',
-        title: randomPick(CASTING_TITLE_TEMPLATES)(city),
+        title:
+          category === 'pageant'
+            ? `${randomPick(PAGEANT_NAMES)} — Open Audition`
+            : randomPick(CASTING_TITLE_TEMPLATES)(city),
         country: 'Sri Lanka',
         category,
         criteria: {
