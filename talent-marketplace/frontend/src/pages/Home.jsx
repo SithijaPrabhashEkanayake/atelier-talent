@@ -25,7 +25,7 @@ import { SL_FALLBACK_TALENT } from '../data/sriLankanTalent';
 const editorialFallbacks = SL_FALLBACK_TALENT;
 
 function MetricsStrip() {
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState(undefined);
 
   useEffect(() => {
     api
@@ -33,6 +33,8 @@ function MetricsStrip() {
       .then((res) => setStats(res.data.data))
       .catch(() => setStats(null));
   }, []);
+
+  if (stats === null) return null;
 
   const metrics = [
     {
@@ -81,7 +83,11 @@ function MetricsStrip() {
                 </div>
                 <div>
                   <div className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight">
-                    {typeof m.value === 'number' ? <AnimatedCounter end={m.value} /> : '—'}
+                    {typeof m.value === 'number' ? (
+                      <AnimatedCounter end={m.value} />
+                    ) : (
+                      <span className="inline-block h-7 w-16 rounded bg-white/10 animate-pulse" aria-hidden="true" />
+                    )}
                   </div>
                   <div className="text-xs font-mono text-zinc-300 font-medium">{m.label}</div>
                   <div className="text-[10px] font-mono text-zinc-500 mt-0.5">{m.sub}</div>
