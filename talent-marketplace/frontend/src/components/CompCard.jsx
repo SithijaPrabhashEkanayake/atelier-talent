@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BadgeCheck, MapPin, ArrowUpRight, Scale, Check } from 'lucide-react';
 import useCompareStore from '../store/compareStore';
 
@@ -11,12 +11,16 @@ const categoryColors = {
   pageant: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
 };
 
+const PROFILE_ID = /^[a-f0-9]{24}$/;
+
 export default function CompCard({ model, index = 0 }) {
   const { selectedTalents, addTalent } = useCompareStore();
+  const navigate = useNavigate();
 
   if (!model) return null;
 
   const id = model.id || model._id;
+  const hasProfile = PROFILE_ID.test(String(id || ''));
   const isSelected = selectedTalents.some((t) => (t.id || t._id) === id);
 
   const categoryStyle =
@@ -29,7 +33,12 @@ export default function CompCard({ model, index = 0 }) {
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.05 }}
       whileHover={{ y: -6 }}
-      className={`group relative rounded-2xl overflow-hidden bg-zinc-900 border transition-all duration-500 flex flex-col shadow-xl ${
+      onClick={(e) => {
+        if (!hasProfile) return;
+        e.stopPropagation();
+        navigate(`/p/${id}`);
+      }}
+      className={`group relative rounded-2xl overflow-hidden bg-zinc-900 border transition-all duration-500 flex flex-col shadow-xl ${hasProfile ? 'cursor-pointer' : ''} ${
         isSelected
           ? 'border-amber-400 ring-2 ring-amber-400/40 shadow-[0_0_30px_rgba(212,175,55,0.25)]'
           : 'border-white/10 hover:border-amber-400/40'
@@ -132,7 +141,10 @@ export default function CompCard({ model, index = 0 }) {
 
         <div className="flex items-center gap-1.5 shrink-0">
           <button
-            onClick={() => addTalent(model)}
+            onClick={(e) => {
+              e.stopPropagation();
+              addTalent(model);
+            }}
             className={`px-2 py-1 text-[10px] font-mono uppercase tracking-wider rounded-lg border transition-all ${
               isSelected
                 ? 'bg-amber-400/20 text-amber-300 border-amber-400/50 font-bold'
@@ -144,6 +156,7 @@ export default function CompCard({ model, index = 0 }) {
 
           <Link
             to={`/p/${id}`}
+            onClick={(e) => e.stopPropagation()}
             className="h-8 w-8 rounded-full bg-white/5 hover:bg-amber-400 hover:text-zinc-950 text-zinc-300 flex items-center justify-center border border-white/10 transition-all"
             title="View Comp-Card & Portfolio"
           >

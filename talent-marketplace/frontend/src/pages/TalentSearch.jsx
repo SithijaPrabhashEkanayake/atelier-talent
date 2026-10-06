@@ -100,12 +100,19 @@ export default function TalentSearch() {
       const res = await api.get(`/search/talent?${buildSearchParams(nextFilters)}`);
       setResults(res.data.data || []);
     } catch (err) {
-      setResults([]);
-      setError(
-        err.response?.status === 403 || err.response?.status === 401
-          ? 'Talent search is available to casting and pageant organizers.'
-          : 'Could not load talent right now. Please try again.',
-      );
+      const status = err.response?.status;
+      if (status === 401 || status === 403) {
+        try {
+          const featured = await api.get('/profiles/showcase');
+          setResults(featured.data.data || []);
+        } catch {
+          setResults([]);
+        }
+        setError('Sign in as a casting or pageant organiser to filter the full directory. Showing featured talent.');
+      } else {
+        setResults([]);
+        setError('Could not load talent right now. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
