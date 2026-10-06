@@ -1,3 +1,4 @@
+const { getJwtSecret } = require('../utils/jwtSecret');
 const { Server } = require('socket.io');
 const jwt = require('jsonwebtoken');
 const Message = require('../models/Message');
@@ -25,7 +26,7 @@ const initSocket = (server) => {
 
       const decoded = jwt.verify(
         token,
-        process.env.JWT_SECRET || 'super_secret_jwt_key_change_me_in_production',
+        getJwtSecret(),
         { algorithms: ['HS256'] },
       );
       socket.user = decoded;

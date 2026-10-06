@@ -17,7 +17,7 @@ import api from '../api/axiosConfig';
 import soundFX from '../utils/soundEffects';
 import fireGoldConfetti from '../utils/confetti';
 
-export default function CastingDetail() {
+function CastingDetailView() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -30,8 +30,6 @@ export default function CastingDetail() {
 
   useEffect(() => {
     let ignore = false;
-    setCasting(null);
-    setLoading(true);
     const fetchCasting = async () => {
       try {
         const res = await api.get(`/castings/${id}`);
@@ -314,4 +312,9 @@ export default function CastingDetail() {
       </div>
     </div>
   );
+}
+
+export default function CastingDetail() {
+  const { id } = useParams();
+  return <CastingDetailView key={id} />;
 }

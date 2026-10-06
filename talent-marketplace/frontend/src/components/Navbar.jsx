@@ -102,7 +102,7 @@ export default function Navbar() {
       import.meta.env.VITE_SOCKET_URL ||
       (import.meta.env.DEV ? 'http://localhost:5000' : undefined);
     const socket = io(socketUrl, {
-      auth: { token },
+      auth: (cb) => cb({ token: getAccessToken() }),
     });
 
     socket.on('notification:new', (notif) => {

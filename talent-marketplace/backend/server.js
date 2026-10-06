@@ -1,4 +1,5 @@
 require('dotenv').config();
+require('./utils/jwtSecret').getJwtSecret();
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');

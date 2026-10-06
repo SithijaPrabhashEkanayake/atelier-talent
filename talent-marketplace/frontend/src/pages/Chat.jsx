@@ -34,12 +34,11 @@ export default function Chat() {
     fetchMessages();
 
     // 2. Setup Socket.io
-    const token = getAccessToken();
     const socketUrl =
       import.meta.env.VITE_SOCKET_URL ||
       (import.meta.env.DEV ? 'http://localhost:5000' : undefined);
     const newSocket = io(socketUrl, {
-      auth: { token },
+      auth: (cb) => cb({ token: getAccessToken() }),
     });
 
     newSocket.on('connect', () => {

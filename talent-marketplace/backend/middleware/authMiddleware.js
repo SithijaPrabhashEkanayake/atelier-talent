@@ -1,3 +1,4 @@
+const { getJwtSecret } = require('../utils/jwtSecret');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
@@ -18,7 +19,7 @@ const protect = async (req, res, next) => {
     // forged) with a different/downgraded algorithm is never accepted.
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || 'super_secret_jwt_key_change_me_in_production',
+      getJwtSecret(),
       { algorithms: ['HS256'] },
     );
 
