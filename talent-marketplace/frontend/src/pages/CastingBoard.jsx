@@ -116,7 +116,7 @@ export default function CastingBoard() {
   useEffect(() => {
     const fetchCastings = async () => {
       try {
-        const res = await api.get('/castings');
+        const res = await api.get('/castings', { params: { limit: 100 } });
         setCastings(res.data.data || []);
       } catch {
         setLoadError('Castings could not be loaded. Please refresh the page.');
