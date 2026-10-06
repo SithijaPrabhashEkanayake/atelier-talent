@@ -299,7 +299,7 @@ Every screen in ATELIER Talent is crafted following modern design engineering be
 
 #### Page 1: Landing & Editorial Showcase (`Home.jsx` - Route `/`)
 * **Component File:** `talent-marketplace/frontend/src/pages/Home.jsx`
-* **Sub-Components:** `VideoHero.jsx`, `BrandMarquee.jsx`, `Carousel.jsx`, `AnimatedCounter.jsx`, `ParallaxBanner.jsx`.
+* **Sub-Components:** `VideoHero.jsx` (a still Sri Lankan editorial image, not a video), `BrandMarquee.jsx`, `Carousel.jsx`, `AnimatedCounter.jsx`, `ParallaxBanner.jsx`.
 * **Visual Structure:**
   1. *Video Hero Banner:* Full-bleed auto-looping runway video with CSS radial vignette gradient overlay.
   2. *Primary Action Button ("Explore Open Castings"):* Glides user directly to `/castings`.
@@ -335,9 +335,9 @@ Every screen in ATELIER Talent is crafted following modern design engineering be
   * *Category Filter Pills:* Multi-select toggles (`Runway`, `Editorial`, `Commercial`, `Pageant`).
   * *Height Range Dual-Slider:* Interactive slider filtering height between 150cm and 200cm.
   * *View Switcher Toggle:* Switches between "Studio Grid" (compact masonry) and "Runway View" (large portrait cards).
-  * *Floating Compare Dock (`CompareDock.jsx`):* Pinned bottom dock showing selected models (up to 4) with a "View Radar Comparison" button that displays Recharts multi-attribute radar charts.
+  * *Floating Compare Dock (`CompareDock.jsx`):* Pinned bottom dock showing selected models (up to 4) with a "View Radar Comparison" button that displays a Recharts radar of five axes computed from each profile's recorded data: height (150–195 cm scale), experience credits (6+ full), portfolio photos (4+ full), skills (4+ full) and verification. The scales are printed beside the chart. Earlier versions used fixed category constants; those were removed because they were not measurements.
   * *Casting Budget Estimator Modal (`BudgetCalculatorModal.jsx`):* Allows casting directors to calculate estimated production budgets based on model count, daily rate, shooting days, and currency (USD, EUR, LKR), complete with a Donut chart breakdown and CSV export.
-* **Examiner Defense:** *"Recruiters do not search for talent through plain text alone. They evaluate visual appeal, physical proportions, and budget constraints simultaneously. The radar dock and budget calculator turn a basic directory into an executive casting suite."*
+* **Examiner Defense:** *"Recruiters do not search for talent through plain text alone. They evaluate visual appeal, physical proportions, and budget constraints simultaneously. The radar dock and budget calculator turn a basic directory into an executive casting suite. Every radar score is traceable to a stored field, so an examiner can check any number by hand."*
 
 #### Page 5: Casting Call Board & Detail (`CastingBoard.jsx`, `CastingDetail.jsx` - Routes `/castings`, `/castings/:id`)
 * **Component Files:** `pages/CastingBoard.jsx`, `pages/CastingDetail.jsx`
@@ -437,7 +437,7 @@ $$\sum_{i \in \mathcal{D}} W_i = 100$$
 * **Tampering with Data:** Mitigated via server-side ownership checks (`isAuthorizedForApplication`, `creatorProfileId === user.profileId`) and double-submit CSRF cookies.
 * **Repudiation:** Mitigated via administrative audit logging in `AdminActionLog.js`.
 * **Information Disclosure:** Mitigated via in-memory access tokens, HttpOnly cookie flags, projection stripping (`select('-password')`), and custom NoSQL sanitization.
-* **Denial of Service:** Mitigated via layered express rate limiters (300 req/15m baseline, 10 req/15m on `/api/auth`) and pagination query capping.
+* **Denial of Service:** Mitigated via layered express rate limiters (300 req/15m baseline on `/api`; 10 req/15m on login, register and password-reset routes only, so ordinary session checks do not count toward it) and pagination query capping.
 * **Elevation of Privilege:** Mitigated via server-side RBAC middleware (`protect`, `authorize('admin')`), ensuring frontend UI visibility is never the sole gatekeeper.
 
 ### 9.2 Data Privacy (GDPR & Sri Lanka Personal Data Protection Act No. 9 of 2022)
@@ -485,7 +485,7 @@ The test suite executes against an in-process, disposable MongoDB instance (`mon
 * **R-04 (Cross-Site Request Forgery):** Mitigated by double-submit CSRF cookie validation.
 * **R-05 (Single-Origin Hosting Cookie Drop):** Mitigated by deploying Express and React from the same origin on Render.
 * **R-06 (NoSQL Injection):** Mitigated by recursive `$`/dot operator sanitization.
-* **R-07 (Brute-Force Credential Stuffing):** Mitigated by strict 10 req/15m rate limiting on `/api/auth`.
+* **R-07 (Brute-Force Credential Stuffing):** Mitigated by strict 10 req/15m rate limiting on login, registration and password-reset routes.
 * **R-08 (Unauthorized Direct Messaging):** Mitigated by unlocking chat only upon mutual consent (`Accepted` status).
 * **R-09 (Duplicate Submissions):** Mitigated by compound unique index in MongoDB.
 * **R-10 (Event Loop Starvation during Matching):** Mitigated by bounding queries to 500 candidates.
@@ -673,3 +673,19 @@ If the exam room Wi-Fi fails or blocks MongoDB Atlas:
 
 ---
 *Master Defense Encyclopedia and Technical Reference for candidate Sandun Prabath (Index: 28607), BSc (Hons) Software Engineering, Faculty of Computing, NSBM Green University. Evaluated by Academic Supervisor Ms. Lakni Peiris.*
+
+---
+
+## Revision Notes — October 2026
+
+These changes were made after the earlier sections were written. Where they conflict with an earlier description, these notes apply.
+
+* **Homepage statistics are live.** The four figures (published talent, verified talent, open casting calls, applications received) come from the public `GET /api/stats` endpoint, which counts database records. The earlier fixed figures (5,000+ profiles, 1,200+ casting calls, 48 countries, 98.4% match accuracy) were removed because no data supported them.
+* **Compare radar uses recorded data only** (see the Compare Dock section above). A zero is shown as zero.
+* **Pageant and event names are real franchise and fashion-week names** (Miss Universe, Miss World, Miss Earth, Miss Grand, Miss Teen, Colombo Fashion Week and others), used as organiser labels. The site footer, the README and SRS section 2.6 state that these names are for illustration and imply no endorsement. Commercial use would require licensing or permission.
+* **Demonstration people are Sri Lankan.** Names, countries, cities and portrait photography are Sri Lankan or South Asian-presenting. Nationality cannot be read from a photograph, so the imagery is described as South Asian-presenting, not verified. Editorial background imagery was replaced to match.
+* **Talent Directory filters always query real data.** Country is optional and case-insensitive. Age and height are fixed ranges. Every combination of discipline, age and height is seeded with at least one profile, and Sri Lankan records are ranked first.
+* **Sri Lankan records rank first** in the Talent Directory, the homepage showcase and the casting board.
+* **Authentication hardening.** The production server refuses to start without `JWT_SECRET`; the development default is used only outside production. The brute-force limiter now applies only to login, registration and password-reset routes.
+* **Real-time chat and notifications** read the current access token on every reconnect, so a long-open session can recover after token expiry.
+* **Casting detail pages** ignore responses for events the user has already navigated away from, so the event displayed always matches the URL.
