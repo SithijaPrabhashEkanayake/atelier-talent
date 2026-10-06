@@ -19,6 +19,7 @@ const ModelProfile = require('../models/ModelProfile');
 const IndustryProfile = require('../models/IndustryProfile');
 const PageantOrgProfile = require('../models/PageantOrgProfile');
 const PAGEANT_NAMES = require('./pageant-names');
+const { ensureAcceptedChat } = require('./chat-demo');
 const PortfolioItem = require('../models/PortfolioItem');
 const CastingCall = require('../models/CastingCall');
 const Application = require('../models/Application');
@@ -183,8 +184,11 @@ const seedSL = async () => {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(PASSWORD, salt);
 
-    let emailCursor = 1;
-    const nextEmail = (prefix) => `${prefix}${emailCursor++}${EMAIL_SUFFIX}`;
+    const emailCursors = {};
+    const nextEmail = (prefix) => {
+      emailCursors[prefix] = (emailCursors[prefix] || 0) + 1;
+      return `${prefix}${emailCursors[prefix]}${EMAIL_SUFFIX}`;
+    };
 
     // --- Models ---
     console.log(`Creating ${COUNT_PER_ROLE} model accounts...`);
@@ -387,6 +391,11 @@ const seedSL = async () => {
       });
     }
     console.log(`  ${applicationDocs.length} applications created.`);
+
+    // Make the documented demo logins chat-ready (accepted application + conversation)
+    await ensureAcceptedChat('model1@sl.demo.talent', 'industry1@sl.demo.talent');
+    await ensureAcceptedChat('model2@sl.demo.talent', 'industry2@sl.demo.talent');
+    await ensureAcceptedChat('model3@sl.demo.talent', 'pageant1@sl.demo.talent');
 
     console.log('\nSri Lanka bulk demo data seeded successfully.');
     console.log(`  ${COUNT_PER_ROLE} models, ${COUNT_PER_ROLE} industry professionals, ${COUNT_PER_ROLE} pageant organizers`);

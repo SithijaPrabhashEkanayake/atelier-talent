@@ -24,6 +24,7 @@ const ModelProfile = require('../models/ModelProfile');
 const IndustryProfile = require('../models/IndustryProfile');
 const PageantOrgProfile = require('../models/PageantOrgProfile');
 const PAGEANT_NAMES = require('./pageant-names');
+const { ensureAcceptedChat } = require('./chat-demo');
 const PortfolioItem = require('../models/PortfolioItem');
 const CastingCall = require('../models/CastingCall');
 const Application = require('../models/Application');
@@ -588,6 +589,12 @@ const seedDB = async () => {
       targetId: null,
       metadata: { note: 'seed data' },
     });
+
+    // Make the documented demo logins chat-ready (accepted application + conversation)
+    await ensureAcceptedChat('model1@demo.talent', 'organizer1@demo.talent');
+    await ensureAcceptedChat('model2@demo.talent', 'organizer2@demo.talent');
+    await ensureAcceptedChat('model3@demo.talent', 'organizer3@demo.talent');
+    await ensureAcceptedChat('model4@demo.talent', 'pageant1@demo.talent');
 
     console.log('\nDemo data seeded successfully. All accounts share the password:', DEMO_PASSWORD);
     console.log('\nSample accounts:');
