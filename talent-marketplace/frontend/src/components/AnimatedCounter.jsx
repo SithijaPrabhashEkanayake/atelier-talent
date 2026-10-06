@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useInView } from 'framer-motion';
 
 /**
  * AnimatedCounter — Scroll-triggered animated number counter.
@@ -23,13 +23,14 @@ export default function AnimatedCounter({
 }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
-  const [display, setDisplay] = useState('0');
+  const [display, setDisplay] = useState(end.toFixed(decimals));
 
   useEffect(() => {
     if (!isInView) return;
 
     let startTs = null;
     let raf;
+    setDisplay((0).toFixed(decimals));
 
     const step = (ts) => {
       if (!startTs) startTs = ts;
@@ -54,16 +55,10 @@ export default function AnimatedCounter({
   }, [isInView, end, duration, decimals]);
 
   return (
-    <motion.span
-      ref={ref}
-      initial={{ opacity: 0, y: 10 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.4 }}
-      className={className}
-    >
+    <span ref={ref} className={className}>
       {prefix}
       {display}
       {suffix}
-    </motion.span>
+    </span>
   );
 }
