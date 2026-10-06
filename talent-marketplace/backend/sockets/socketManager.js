@@ -6,6 +6,7 @@ const Application = require('../models/Application');
 const IndustryProfile = require('../models/IndustryProfile');
 const PageantOrgProfile = require('../models/PageantOrgProfile');
 const ModelProfile = require('../models/ModelProfile');
+const User = require('../models/User');
 
 let io = null;
 
@@ -17,7 +18,7 @@ const initSocket = (server) => {
     },
   });
 
-  io.use((socket, next) => {
+  io.use(async (socket, next) => {
     try {
       const token =
         socket.handshake.auth?.token ||
@@ -29,7 +30,11 @@ const initSocket = (server) => {
         getJwtSecret(),
         { algorithms: ['HS256'] },
       );
-      socket.user = decoded;
+      const account = await User.findById(decoded.id).select('role status');
+      if (!account || account.status !== 'Active') {
+        return next(new Error('Authentication error: account unavailable'));
+      }
+      socket.user = { id: decoded.id, role: account.role };
       next();
     } catch (err) {
       next(new Error(`Authentication error: ${err.message}`));
