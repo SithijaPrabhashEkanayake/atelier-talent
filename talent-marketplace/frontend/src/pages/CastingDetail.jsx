@@ -27,6 +27,7 @@ function CastingDetailView() {
   const [applying, setApplying] = useState(false);
   const [message, setMessage] = useState('');
   const [closeError, setCloseError] = useState('');
+  const [myApplication, setMyApplication] = useState(undefined); // undefined = still checking, null = none found
 
   useEffect(() => {
     let ignore = false;
@@ -54,14 +55,38 @@ function CastingDetailView() {
       .catch(() => setOwnProfileId(null));
   }, [user?.role]);
 
+  // A model may be revisiting a casting they already applied to. Check so the
+  // page shows their real status instead of always offering to apply again.
+  useEffect(() => {
+    if (user?.role !== 'model') {
+      setMyApplication(null);
+      return;
+    }
+    let ignore = false;
+    api
+      .get('/applications/me')
+      .then((res) => {
+        if (ignore) return;
+        const existing = (res.data.data || []).find((a) => a.castingCallId?._id === id);
+        setMyApplication(existing || null);
+      })
+      .catch(() => {
+        if (!ignore) setMyApplication(null);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [id, user?.role]);
+
   const handleApply = async () => {
     setApplying(true);
     setMessage('');
     try {
-      await api.post('/applications', { castingCallId: casting._id });
+      const res = await api.post('/applications', { castingCallId: casting._id });
       soundFX.playCelebration();
       fireGoldConfetti({ particleCount: 80 });
       setMessage('Application submitted successfully to casting director!');
+      setMyApplication(res.data.data);
     } catch (err) {
       soundFX.playTick();
       setMessage(err.response?.data?.message || 'Failed to submit application.');
@@ -268,7 +293,35 @@ function CastingDetailView() {
         </div>
 
         {/* Model Application Call to Action */}
-        {user?.role === 'model' && casting.status === 'open' && (
+        {user?.role === 'model' && casting.status === 'open' && myApplication === undefined && (
+          <div className="pt-8 text-xs text-zinc-500 font-mono">Checking your application status…</div>
+        )}
+
+        {user?.role === 'model' && casting.status === 'open' && myApplication && (
+          <div className="pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div>
+              <h3 className="text-base font-display font-semibold text-white">
+                You already applied
+              </h3>
+              <p className="text-xs text-zinc-400 font-light mt-0.5">
+                Status:{' '}
+                <span className="text-amber-300 font-semibold capitalize">
+                  {myApplication.status === 'rejected' ? 'Not selected' : myApplication.status}
+                </span>
+              </p>
+            </div>
+            {myApplication.status === 'accepted' && (
+              <Link
+                to={`/chat/${myApplication._id}`}
+                className="btn-gold w-full sm:w-auto !py-3 !px-8 text-center"
+              >
+                Open Direct Chat
+              </Link>
+            )}
+          </div>
+        )}
+
+        {user?.role === 'model' && casting.status === 'open' && myApplication === null && (
           <div className="pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div>
               <h3 className="text-base font-display font-semibold text-white">
