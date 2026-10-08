@@ -22,6 +22,8 @@ const castingCallSchema = new mongoose.Schema(
     description: { type: String, required: true },
     applicationDeadline: { type: Date, required: true },
     status: { type: String, enum: ['open', 'closed', 'expired'], default: 'open' },
+    moodboardUrl: { type: String },
+    compensation: { type: String },
     // Admin moderation flag — deliberately separate from `status`, which
     // tracks the casting's own lifecycle (open/closed/expired) and has
     // different meaning. A removed casting keeps its underlying status but

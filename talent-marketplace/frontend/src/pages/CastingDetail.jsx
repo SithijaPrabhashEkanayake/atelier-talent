@@ -17,6 +17,8 @@ import api from '../api/axiosConfig';
 import soundFX from '../utils/soundEffects';
 import fireGoldConfetti from '../utils/confetti';
 
+const stripEmDash = (str) => (str ? str.replace(/\s*—\s*/g, ' ').replace(/—/g, '').trim() : '');
+
 function CastingDetailView() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -152,6 +154,23 @@ function CastingDetailView() {
 
       {/* Main Casting Detail Container */}
       <div className="glass-dark rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl relative overflow-hidden">
+        {/* Moodboard Banner */}
+        {casting.moodboardUrl && (
+          <div className="relative -mx-8 -mt-8 sm:-mx-10 sm:-mt-10 mb-8 aspect-[21/9] max-h-72 w-[calc(100%+4rem)] sm:w-[calc(100%+5rem)] overflow-hidden bg-gradient-to-br from-zinc-900 to-zinc-950">
+            <img
+              src={casting.moodboardUrl}
+              alt={casting.title}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src =
+                  'https://images.unsplash.com/photo-1536766768598-e09213fdcf22?w=1200&q=80&auto=format&fit=crop';
+              }}
+              className="w-full h-full object-cover object-[center_20%] filter brightness-90"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/40 to-transparent pointer-events-none" />
+          </div>
+        )}
+
         {/* Glow Accent */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -181,7 +200,7 @@ function CastingDetailView() {
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white tracking-tight leading-tight">
-              {casting.title}
+              {stripEmDash(casting.title)}
             </h1>
 
             <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-zinc-400 mt-4">
@@ -238,7 +257,7 @@ function CastingDetailView() {
             <span>Production Brief & Creative Scope</span>
           </h2>
           <p className="text-zinc-300 text-sm leading-relaxed whitespace-pre-wrap font-sans font-light">
-            {casting.description}
+            {stripEmDash(casting.description)}
           </p>
         </div>
 
@@ -290,6 +309,20 @@ function CastingDetailView() {
               </span>
             </div>
           </div>
+
+          {casting.compensation && (
+            <div className="mt-4 p-4 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-between">
+              <div>
+                <span className="block text-[10px] font-mono text-amber-300 uppercase tracking-wider mb-0.5">
+                  Package / Compensation / Award
+                </span>
+                <span className="text-sm font-sans font-bold text-white">
+                  {casting.compensation}
+                </span>
+              </div>
+              <Sparkles size={18} className="text-amber-400" />
+            </div>
+          )}
         </div>
 
         {/* Model Application Call to Action */}

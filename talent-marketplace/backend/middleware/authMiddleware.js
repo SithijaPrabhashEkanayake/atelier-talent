@@ -62,4 +62,27 @@ const authorize = (...roles) => {
   };
 };
 
-module.exports = { protect, authorize };
+const optionalProtect = async (req, res, next) => {
+  let token;
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    return next();
+  }
+
+  try {
+    const decoded = jwt.verify(token, getJwtSecret(), { algorithms: ['HS256'] });
+    const user = await User.findById(decoded.id);
+    if (user && user.status === 'Active') {
+      req.user = user;
+    }
+    next();
+  } catch (_err) {
+    next();
+  }
+};
+
+module.exports = { protect, authorize, optionalProtect };
+

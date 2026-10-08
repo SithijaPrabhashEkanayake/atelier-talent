@@ -6,10 +6,12 @@ import api from '../api/axiosConfig';
 import useAuthStore from '../store/authStore';
 
 // Curated high-fashion casting fallbacks with moodboard imagery
+const stripEmDash = (str) => (str ? str.replace(/\s*—\s*/g, ' ').replace(/—/g, '').trim() : '');
+
 const curatedCastingFallbacks = [
   {
     _id: 'c1',
-    title: 'Colombo Autumn Fashion Week — Runway Opening Lead',
+    title: 'Colombo Autumn Fashion Week Runway Opening Lead',
     description:
       'Seeking high-fashion runway models for the opening segment of Colombo Fashion Week. Prior runway walk experience and ability to attend 2 fitting sessions in Colombo required.',
     category: 'runway',
@@ -54,7 +56,7 @@ const curatedCastingFallbacks = [
   },
   {
     _id: 'c4',
-    title: 'Miss Earth — National Auditions 2026',
+    title: 'Miss Earth National Auditions 2026',
     description:
       'Official delegate search for the upcoming international pageant. Seeking articulate, poised candidates with leadership and public presentation background.',
     category: 'pageant',
@@ -248,14 +250,19 @@ export default function CastingBoard() {
               >
                 <div>
                   {/* Moodboard Header Image */}
-                  <div className="relative aspect-[16/9] w-full overflow-hidden bg-zinc-950">
+                  <div className="relative aspect-[16/9] w-full overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-900/80 to-zinc-950">
                     <img
                       src={moodboard}
                       alt={c.title}
                       loading="lazy"
-                      className="w-full h-full object-cover object-center filter brightness-90 group-hover:scale-105 transition-transform duration-700"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src =
+                          'https://images.unsplash.com/photo-1536766768598-e09213fdcf22?w=800&q=80&auto=format&fit=crop';
+                      }}
+                      className="w-full h-full object-cover object-[center_20%] filter brightness-90 group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent pointer-events-none" />
 
                     <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
                       <span
@@ -277,25 +284,47 @@ export default function CastingBoard() {
                   {/* Body Content */}
                   <div className="p-6">
                     <h2 className="text-lg font-bold font-display text-white group-hover:text-amber-300 transition-colors leading-snug mb-3">
-                      {c.title}
+                      {stripEmDash(c.title)}
                     </h2>
                     <p className="text-xs text-zinc-400 line-clamp-3 font-sans leading-relaxed mb-6">
-                      {c.description}
+                      {stripEmDash(c.description)}
                     </p>
 
                     {/* Physical Requirements Specs Pills */}
-                    {(c.heightRangeCm || c.ageRange) && (
-                      <div className="flex flex-wrap gap-2 mb-4 font-mono text-[11px] text-zinc-300">
-                        {c.heightRangeCm?.min && (
-                          <span className="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">
-                            Ht: {c.heightRangeCm.min}–{c.heightRangeCm.max || 'Any'} cm
-                          </span>
-                        )}
-                        {c.ageRange?.min && (
-                          <span className="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">
-                            Age: {c.ageRange.min}–{c.ageRange.max || 'Any'}
-                          </span>
-                        )}
+                    {(() => {
+                      const minHt = c.criteria?.minHeightCm ?? c.heightRangeCm?.min;
+                      const maxHt = c.criteria?.maxHeightCm ?? c.heightRangeCm?.max;
+                      const minAge = c.criteria?.minAge ?? c.ageRange?.min;
+                      const maxAge = c.criteria?.maxAge ?? c.ageRange?.max;
+                      const skills = c.criteria?.requiredSkills || [];
+
+                      if (!minHt && !maxHt && !minAge && !maxAge && skills.length === 0) return null;
+
+                      return (
+                        <div className="flex flex-wrap gap-2 mb-4 font-mono text-[11px] text-zinc-300">
+                          {(minHt || maxHt) && (
+                            <span className="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">
+                              Ht: {minHt || 'Any'}–{maxHt || 'Any'} cm
+                            </span>
+                          )}
+                          {(minAge || maxAge) && (
+                            <span className="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">
+                              Age: {minAge || 'Any'}–{maxAge || 'Any'}
+                            </span>
+                          )}
+                          {skills.length > 0 && (
+                            <span className="px-2.5 py-1 rounded-md bg-amber-400/10 text-amber-300 border border-amber-400/20">
+                              {skills[0]}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })()}
+
+                    {c.compensation && (
+                      <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-[11px] font-mono">
+                        <span className="text-zinc-500 uppercase tracking-wider text-[10px]">Package</span>
+                        <span className="font-semibold text-amber-300 truncate max-w-[190px]">{c.compensation}</span>
                       </div>
                     )}
                   </div>
@@ -356,12 +385,32 @@ export default function CastingBoard() {
             <p className="text-zinc-400 text-xs max-w-sm mb-6">
               {loadError || 'Check back soon or explore other categories on the board.'}
             </p>
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className="btn-ghost-luxury !text-xs !py-2"
-            >
-              Show All Castings
-            </button>
+            {loadError ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setLoading(true);
+                  setLoadError('');
+                  fetchPage(1, selectedCategory, false)
+                    .catch((err) => {
+                      console.error('Retry failed:', err);
+                      setLoadError('Castings could not be loaded. Please refresh the page.');
+                    })
+                    .finally(() => setLoading(false));
+                }}
+                className="btn-gold !text-xs !py-2.5 !px-6 cursor-pointer"
+              >
+                Try Again
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setSelectedCategory('all')}
+                className="btn-ghost-luxury !text-xs !py-2 cursor-pointer"
+              >
+                Show All Castings
+              </button>
+            )}
           </div>
         )}
       </div>

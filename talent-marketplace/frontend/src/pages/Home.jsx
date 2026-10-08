@@ -349,49 +349,68 @@ function EcosystemSection() {
   );
 }
 
+const stripEmDash = (str) => (str ? str.replace(/\s*—\s*/g, ' ').replace(/—/g, '').trim() : '');
+
+const defaultMockCastings = [
+  {
+    _id: 'c1',
+    title: 'Colombo Autumn Fashion Week Runway Opening Lead',
+    country: 'Sri Lanka',
+    category: 'runway',
+    compensation: '€2,500 / Day',
+    applicationDeadline: '2026-10-25T00:00:00.000Z',
+    criteria: { minAge: 18, maxAge: 28, minHeightCm: 178, maxHeightCm: 188, requiredSkills: ['runway'] },
+  },
+  {
+    _id: 'c2',
+    title: 'Vogue Global Haute Couture Editorial Campaign',
+    country: 'Sri Lanka',
+    category: 'editorial',
+    compensation: '€4,200 Total',
+    applicationDeadline: '2026-11-04T00:00:00.000Z',
+    criteria: { minAge: 19, maxAge: 32, minHeightCm: 175, maxHeightCm: 185, requiredSkills: ['editorial posing'] },
+  },
+  {
+    _id: 'c3',
+    title: 'Colombo Fashion Week 2026 Resort Wear Showcase',
+    country: 'Sri Lanka',
+    category: 'runway',
+    compensation: 'LKR 150,000 / Show',
+    applicationDeadline: '2026-11-15T00:00:00.000Z',
+    criteria: { minAge: 18, maxAge: 30, minHeightCm: 174, maxHeightCm: 190, requiredSkills: ['catwalk'] },
+  },
+  {
+    _id: 'c4',
+    title: 'Miss Universe National Auditions 2026',
+    country: 'Sri Lanka',
+    category: 'pageant',
+    compensation: 'Crown & Travel Grant',
+    applicationDeadline: '2026-11-18T00:00:00.000Z',
+    criteria: { minAge: 18, maxAge: 28, minHeightCm: 172, maxHeightCm: 185, requiredSkills: ['public speaking'] },
+  },
+];
+
 function LiveCastingSection() {
-  const castings = [
-    {
-      title: 'Colombo Autumn Fashion Week — Runway Lead',
-      org: 'Vogue Italia Production',
-      country: 'Sri Lanka',
-      category: 'Runway',
-      compensation: '€2,500 / Day',
-      deadline: 'Oct 15, 2026',
-      badge: 'URGENT',
-      criteria: 'Height 178cm+ · Runway experience',
-    },
-    {
-      title: 'Colombo Fashion Week 2026 Official Opening',
-      org: 'CFW Runway Collective',
-      country: 'Sri Lanka',
-      category: 'Haute Couture',
-      compensation: 'Paid Role',
-      deadline: 'Nov 02, 2026',
-      badge: 'FEATURED',
-      criteria: 'Editorial portfolio · High poise',
-    },
-    {
-      title: 'High Jewelry Campaign — Colombo & Kandy',
-      org: 'Luxe Global Agency',
-      country: 'Sri Lanka',
-      category: 'Editorial',
-      compensation: '$4,000 Total',
-      deadline: 'Oct 28, 2026',
-      badge: 'OPEN',
-      criteria: 'Fine features · International look',
-    },
-    {
-      title: 'Miss Universe — National Delegate Audition',
-      org: 'Miss Universe',
-      country: 'Sri Lanka',
-      category: 'Pageant',
-      compensation: 'Crown & Travel Grant',
-      deadline: 'Nov 18, 2026',
-      badge: 'OFFICIAL',
-      criteria: 'Age 18-28 · Public speaking',
-    },
-  ];
+  const [castings, setCastings] = useState([]);
+
+  useEffect(() => {
+    let ignore = false;
+    api
+      .get('/castings', { params: { limit: 8, status: 'open' } })
+      .then((res) => {
+        if (!ignore && res.data?.data && res.data.data.length > 0) {
+          setCastings(res.data.data);
+        }
+      })
+      .catch(() => {
+        // Graceful fallback to default mock array if network fails
+      });
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const displayList = castings.length > 0 ? castings : defaultMockCastings;
 
   return (
     <section className="py-24 bg-[#09090b] border-t border-white/5">
@@ -409,44 +428,68 @@ function LiveCastingSection() {
             </Link>
           }
         >
-          {castings.map((c, i) => (
-            <div key={i} className="w-[310px] sm:w-[350px]">
-              <motion.div
-                whileHover={{ y: -6 }}
-                className="glass-dark rounded-2xl p-6 border border-white/10 hover:border-amber-400/50 transition-all flex flex-col justify-between h-[270px] shadow-xl"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/30">
-                      {c.badge}
-                    </span>
-                    <span className="text-[11px] font-mono text-zinc-400 flex items-center gap-1">
-                      <Clock size={11} className="text-amber-400/70" />
-                      {c.deadline}
-                    </span>
-                  </div>
-                  <h3 className="text-base font-semibold text-white mb-1.5 leading-snug hover:text-amber-300 transition-colors line-clamp-2">
-                    {c.title}
-                  </h3>
-                  <p className="text-xs text-zinc-400 mb-2">
-                    {c.org} · {c.country}
-                  </p>
-                  <p className="text-[11px] font-mono text-zinc-500 line-clamp-1">{c.criteria}</p>
-                </div>
+          {displayList.map((c, i) => {
+            const minHt = c.criteria?.minHeightCm ?? c.heightRangeCm?.min;
+            const maxHt = c.criteria?.maxHeightCm ?? c.heightRangeCm?.max;
+            const minAge = c.criteria?.minAge ?? c.ageRange?.min;
+            const maxAge = c.criteria?.maxAge ?? c.ageRange?.max;
+            const skills = c.criteria?.requiredSkills || [];
 
-                <div className="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono">
-                  <span className="text-amber-400 font-bold">{c.compensation}</span>
-                  <Link
-                    to="/castings"
-                    className="text-white hover:text-amber-300 flex items-center gap-1 font-semibold"
-                  >
-                    <span>Apply</span>
-                    <ArrowRight size={12} />
-                  </Link>
-                </div>
-              </motion.div>
-            </div>
-          ))}
+            const specs = [];
+            if (minHt || maxHt) specs.push(`Height: ${minHt || 'Any'}–${maxHt || 'Any'}cm`);
+            if (minAge || maxAge) specs.push(`Age: ${minAge || 'Any'}–${maxAge || 'Any'}`);
+            if (skills.length > 0) specs.push(skills[0]);
+            const specSummary = specs.length > 0 ? specs.join(' · ') : 'Open Physical Criteria';
+
+            const deadlineText = c.applicationDeadline
+              ? new Date(c.applicationDeadline).toLocaleDateString(undefined, {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })
+              : 'Rolling Deadline';
+
+            const targetUrl = c._id ? `/castings/${c._id}` : '/castings';
+
+            return (
+              <div key={c._id || i} className="w-[310px] sm:w-[350px]">
+                <motion.div
+                  whileHover={{ y: -6 }}
+                  className="glass-dark rounded-2xl p-6 border border-white/10 hover:border-amber-400/50 transition-all flex flex-col justify-between h-[270px] shadow-xl"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/30">
+                        {c.category?.toUpperCase() || 'CASTING'}
+                      </span>
+                      <span className="text-[11px] font-mono text-zinc-400 flex items-center gap-1">
+                        <Clock size={11} className="text-amber-400/70" />
+                        {deadlineText}
+                      </span>
+                    </div>
+                    <h3 className="text-base font-semibold text-white mb-1.5 leading-snug hover:text-amber-300 transition-colors line-clamp-2">
+                      {stripEmDash(c.title)}
+                    </h3>
+                    <p className="text-xs text-zinc-400 mb-2">
+                      {c.country || 'Sri Lanka'} · <span className="capitalize">{c.category}</span>
+                    </p>
+                    <p className="text-[11px] font-mono text-zinc-500 line-clamp-1">{specSummary}</p>
+                  </div>
+
+                  <div className="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono">
+                    <span className="text-amber-400 font-bold">{c.compensation || 'Official Casting'}</span>
+                    <Link
+                      to={targetUrl}
+                      className="text-white hover:text-amber-300 flex items-center gap-1 font-semibold"
+                    >
+                      <span>View Brief</span>
+                      <ArrowRight size={12} />
+                    </Link>
+                  </div>
+                </motion.div>
+              </div>
+            );
+          })}
         </Carousel>
       </div>
     </section>
@@ -493,7 +536,7 @@ export default function Home() {
   const handleOpenLightbox = (model, index) => {
     const items = editorialFallbacks.map((m) => ({
       url: m.thumbnailUrl,
-      title: `${m.fullName} — ${m.category.toUpperCase()}`,
+      title: `${m.fullName} ${m.category.toUpperCase()}`,
       caption: `${m.country} • Height: ${m.heightCm} cm • B-W-H: ${m.measurements.bust}-${m.measurements.waist}-${m.measurements.hips}`,
     }));
     setLightboxItems(items);

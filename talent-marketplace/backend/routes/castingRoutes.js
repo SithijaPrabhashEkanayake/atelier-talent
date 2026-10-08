@@ -8,12 +8,12 @@ const {
   getApplicants,
 } = require('../controllers/castingController');
 const { getRecommendationsForCasting } = require('../controllers/matchController');
-const { protect, authorize } = require('../middleware/authMiddleware');
+const { protect, authorize, optionalProtect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.get('/', protect, getCastingCalls);
-router.get('/:id', protect, getCastingCallById);
+router.get('/', optionalProtect, getCastingCalls);
+router.get('/:id', optionalProtect, getCastingCallById);
 
 router.post(
   '/',

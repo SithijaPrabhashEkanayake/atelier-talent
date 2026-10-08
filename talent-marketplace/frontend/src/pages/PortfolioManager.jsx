@@ -330,7 +330,7 @@ export default function PortfolioManager() {
                   {item.type === 'photo' ? (
                     <img
                       src={item.mediaUrl}
-                      alt={item.category ? `Portfolio — ${item.category}` : 'Portfolio asset'}
+                      alt={item.category ? `Portfolio ${item.category}` : 'Portfolio asset'}
                       loading="lazy"
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     />

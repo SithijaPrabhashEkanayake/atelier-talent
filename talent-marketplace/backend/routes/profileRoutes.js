@@ -6,7 +6,7 @@ const {
   getAllProfiles,
   getPublicShowcase,
 } = require('../controllers/profileController');
-const { protect, authorize } = require('../middleware/authMiddleware');
+const { protect, authorize, optionalProtect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -24,6 +24,6 @@ router.get(
   authorize('industry_professional', 'pageant_organizer', 'admin'),
   getAllProfiles,
 );
-router.get('/:id', protect, getProfileById);
+router.get('/:id', optionalProtect, getProfileById);
 
 module.exports = router;

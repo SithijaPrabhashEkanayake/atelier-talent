@@ -17,6 +17,8 @@ const UPDATABLE_FIELDS = [
   'criteria',
   'description',
   'applicationDeadline',
+  'moodboardUrl',
+  'compensation',
 ];
 const pickUpdatableFields = (body) => {
   const payload = {};
@@ -273,14 +275,23 @@ exports.getApplicants = async (req, res) => {
     const applicationsWithScore = applications.map((application) => {
       const plain = application.toObject();
       if (plain.modelProfileId) {
-        const { score, breakdown } = computeMatchScore(castingCall, plain.modelProfileId);
+        const { score, breakdown, explanation, matchTier, keyStrengths, keyGaps } =
+          computeMatchScore(castingCall, plain.modelProfileId);
         plain.matchScore = score;
         plain.matchBreakdown = breakdown;
+        plain.matchExplanation = explanation;
+        plain.matchTier = matchTier;
+        plain.matchStrengths = keyStrengths || [];
+        plain.matchGaps = keyGaps || [];
       } else {
         // modelProfileId can be null if the model deleted their profile
         // after applying — nothing to score against.
         plain.matchScore = null;
         plain.matchBreakdown = null;
+        plain.matchExplanation = null;
+        plain.matchTier = null;
+        plain.matchStrengths = [];
+        plain.matchGaps = [];
       }
       return plain;
     });

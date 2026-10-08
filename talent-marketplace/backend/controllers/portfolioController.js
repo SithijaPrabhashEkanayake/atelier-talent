@@ -80,8 +80,8 @@ exports.getPortfolio = async (req, res) => {
         .json({ success: false, errorCode: 'NOT_FOUND', message: 'Profile not found' });
     }
 
-    const isOwner = profile.userId.toString() === req.user.id;
-    const isAdmin = req.user.role === 'admin';
+    const isOwner = Boolean(req.user && profile.userId.toString() === req.user.id);
+    const isAdmin = Boolean(req.user && req.user.role === 'admin');
     if (!profile.isPublished && !isOwner && !isAdmin) {
       return res
         .status(404)

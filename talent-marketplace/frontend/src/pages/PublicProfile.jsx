@@ -86,7 +86,7 @@ export default function PublicProfile() {
 
   const lightboxItems = portfolio.map((item, idx) => ({
     url: item.mediaUrl,
-    title: `${displayName} — ${item.category?.toUpperCase() || 'EDITORIAL'}`,
+    title: `${displayName} ${item.category?.toUpperCase() || 'EDITORIAL'}`,
     caption: `Asset #${idx + 1} • Format: ${item.type?.toUpperCase()} • Category: ${item.category}`,
   }));
 
