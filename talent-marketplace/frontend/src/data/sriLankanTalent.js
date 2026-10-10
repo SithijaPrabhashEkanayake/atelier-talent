@@ -1,36 +1,36 @@
-// Sri Lankan / South Asian-presenting portrait photos (Unsplash), verified by
-// visual review. Used by the public showcase fallbacks so no image of a person
-// on those surfaces is from another country.
-const photo = (id, width = 800) =>
-  `https://images.unsplash.com/${id}?w=${width}&q=80&auto=format&fit=crop`;
-
 export const SL_FEMALE_PHOTOS = [
-  photo('photo-1536766768598-e09213fdcf22'),
-  photo('photo-1616639943825-e0fbad20a3d3'),
-  photo('photo-1626775550407-c09be28b6053'),
-  photo('photo-1626307112816-18e1c86ac131'),
-  photo('photo-1778148046667-7228d3dc59cd'),
-  photo('photo-1772037848780-f4c456155b90'),
-  photo('photo-1771654104661-ab6f3581b5af'),
-  photo('photo-1758985402638-6028bae83b98'),
-  photo('photo-1771654104010-1d50eb00a04f'),
-  photo('photo-1778148046680-cd802a2199ea'),
-  photo('photo-1778148046745-ebe12ab2c022'),
-  photo('photo-1650286549949-2cbcd1a25bad'),
-  photo('photo-1770748034186-6d6e5738cddf'),
+  '/images/models/unique-female-01.jpg',
+  '/images/models/unique-female-02.jpg',
+  '/images/models/unique-female-03.jpg',
+  '/images/models/unique-female-04.jpg',
+  '/images/models/unique-female-05.jpg',
+  '/images/models/unique-female-06.jpg',
+  '/images/models/unique-female-07.jpg',
+  '/images/models/unique-female-08.jpg',
+  '/images/models/unique-female-09.jpg',
+  '/images/models/unique-female-10.jpg',
+  '/images/models/unique-female-11.jpg',
+  '/images/models/unique-female-12.jpg',
+  '/images/models/unique-female-13.jpg',
+  '/images/models/unique-female-14.jpg',
+  '/images/models/unique-female-15.jpg',
+  '/images/models/unique-female-16.jpg',
+  '/images/models/unique-female-17.jpg',
 ];
 
 export const SL_MALE_PHOTOS = [
-  photo('photo-1653055645127-54ec96add7b5'),
-  photo('photo-1790575546099-13c92c38859b'),
-  photo('photo-1781106782412-d160a437d658'),
-  photo('photo-1774438023794-a0819fccca54'),
-  photo('photo-1774171312574-c468f3f5f0fa'),
-  photo('photo-1762709412743-3395ed866302'),
-  photo('photo-1762709412730-321a0d81b517'),
-  photo('photo-1618956625714-c74d457bcfdc'),
-  photo('photo-1761435756843-0ca5f4ff1d59'),
-  photo('photo-1634999752255-18e990af12f2'),
+  '/images/models/unique-male-01.jpg',
+  '/images/models/unique-male-02.jpg',
+  '/images/models/unique-male-03.jpg',
+  '/images/models/unique-male-04.jpg',
+  '/images/models/unique-male-05.jpg',
+  '/images/models/unique-male-06.jpg',
+  '/images/models/unique-male-07.jpg',
+  '/images/models/unique-male-08.jpg',
+  '/images/models/unique-male-09.jpg',
+  '/images/models/unique-male-10.jpg',
+  '/images/models/unique-male-11.jpg',
+  '/images/models/unique-male-12.jpg',
 ];
 
 export const SL_FALLBACK_TALENT = [

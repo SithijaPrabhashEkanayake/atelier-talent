@@ -65,8 +65,7 @@ const curatedCastingFallbacks = [
     applicationDeadline: '2026-12-01T00:00:00.000Z',
     ageRange: { min: 18, max: 28 },
     heightRangeCm: { min: 172, max: 185 },
-    moodboardUrl:
-      'https://images.unsplash.com/photo-1781106782412-d160a437d658?w=800&q=80&auto=format&fit=crop',
+    moodboardUrl: '/images/pageants/miss-earth-sri-lanka.jpg',
     compensation: 'Franchise Crown Sponsorship',
   },
   {

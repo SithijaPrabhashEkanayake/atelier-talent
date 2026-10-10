@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
+const path = require('path');
 const helmet = require('helmet');
 const { createRateLimiter, mongoSanitize } = require('./middleware/security');
 const { csrfProtection } = require('./middleware/csrfMiddleware');
@@ -53,6 +54,9 @@ app.use(
 );
 app.use(csrfProtection);
 app.use(mongoSanitize);
+
+// Serve static images for uploads and pageants
+app.use('/images', express.static(path.join(__dirname, '../frontend/public/images')));
 
 // Basic route for testing & CSRF initialization
 app.get('/api/health', (req, res) => {

@@ -579,7 +579,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2026-11-30T23:59:59.000Z'),
     compensation: 'Official Crown + LKR 2,500,000 Sponsorship Package + Flights to World Finals',
-    moodboardUrl: photo('photo-1536766768598-e09213fdcf22'), // Sri Lankan woman in golden silk drape
+    moodboardUrl: '/images/pageants/miss-universe-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -597,7 +597,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2026-12-05T23:59:59.000Z'),
     compensation: 'National Title Crown + LKR 1,500,000 Grant for Charity Project',
-    moodboardUrl: photo('photo-1778148046667-7228d3dc59cd'), // Sri Lankan poised model
+    moodboardUrl: '/images/pageants/miss-world-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -615,7 +615,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2026-12-10T23:59:59.000Z'),
     compensation: 'National Eco Crown + Tree Conservation Ambassador Grant + International Flight',
-    moodboardUrl: photo('photo-1626307112816-18e1c86ac131'), // South Asian woman in traditional heritage setting
+    moodboardUrl: '/images/pageants/miss-earth-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -633,7 +633,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2026-12-12T23:59:59.000Z'),
     compensation: 'Golden Crown + LKR 1,000,000 Cash Prize + International Wardrobe',
-    moodboardUrl: photo('photo-1616639943825-e0fbad20a3d3'), // South Asian striking model
+    moodboardUrl: '/images/pageants/miss-grand-international-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -651,7 +651,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2026-12-15T23:59:59.000Z'),
     compensation: 'National Tiara + All-Expenses-Paid Tokyo Expedition',
-    moodboardUrl: photo('photo-1617627143750-d86bc21e42bb'), // South Asian woman in elegant silk saree
+    moodboardUrl: '/images/pageants/miss-international-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -669,7 +669,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2026-12-20T23:59:59.000Z'),
     compensation: 'Supranational Crown + LKR 1,200,000 Contract + European Finals Trip',
-    moodboardUrl: photo('photo-1778148046680-cd802a2199ea'), // South Asian glamorous evening styling
+    moodboardUrl: '/images/pageants/miss-supranational-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -687,7 +687,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2026-12-28T23:59:59.000Z'),
     compensation: 'Continental Crown + LKR 800,000 Sponsorship Package',
-    moodboardUrl: photo('photo-1626775550407-c09be28b6053'), // South Asian model with traditional jewelry
+    moodboardUrl: '/images/pageants/miss-intercontinental-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -705,7 +705,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-01-05T23:59:59.000Z'),
     compensation: 'Official Mrs. World Sri Lanka Crown + LKR 2,000,000 Prize & Las Vegas World Finals',
-    moodboardUrl: photo('photo-1546804784-896d0dca3805'), // Sri Lankan royal bride/queen
+    moodboardUrl: '/images/pageants/mrs-world-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -723,7 +723,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-01-10T23:59:59.000Z'),
     compensation: 'Crown + National Ambassador Role + LKR 750,000 Advocacy Fund',
-    moodboardUrl: photo('photo-1573496359142-b8d87734a5a2'), // Poised executive woman leader
+    moodboardUrl: '/images/pageants/mrs-universe-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -741,7 +741,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-01-15T23:59:59.000Z'),
     compensation: 'Mr. World Sri Lanka Title + LKR 1,000,000 Contract + World Finals Entry',
-    moodboardUrl: photo('photo-1790575546099-13c92c38859b'), // Handsome Sri Lankan man in formal black suit
+    moodboardUrl: '/images/pageants/mr-world-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -759,7 +759,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-01-18T23:59:59.000Z'),
     compensation: 'Mister Global SL Sash & Trophy + LKR 600,000 Prize',
-    moodboardUrl: photo('photo-1781106782412-d160a437d658'), // Handsome South Asian male model
+    moodboardUrl: '/images/pageants/mister-global-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -777,7 +777,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-01-22T23:59:59.000Z'),
     compensation: 'Manhunt Winner Sash + LKR 800,000 Modeling Contract',
-    moodboardUrl: photo('photo-1634999752255-18e990af12f2'), // South Asian male supermodel
+    moodboardUrl: '/images/pageants/manhunt-international-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -795,7 +795,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-01-25T23:59:59.000Z'),
     compensation: 'National Title + European Stage Passage + LKR 700,000 Sponsor Package',
-    moodboardUrl: photo('photo-1774438023794-a0819fccca54'), // Handsome South Asian gentleman in sharp tailored attire
+    moodboardUrl: '/images/pageants/mister-supranational-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -813,7 +813,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-01-28T23:59:59.000Z'),
     compensation: 'Miss Tourism Crown + LKR 600,000 Tourism Ambassador Honorarium',
-    moodboardUrl: photo('photo-1772037848780-f4c456155b90'), // South Asian woman with warm island smile
+    moodboardUrl: '/images/pageants/miss-tourism-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -831,7 +831,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-02-01T23:59:59.000Z'),
     compensation: 'Official Tiara + Manila Finals Travel + LKR 500,000 Sponsorship',
-    moodboardUrl: photo('photo-1771654104661-ab6f3581b5af'), // South Asian model with delicate features
+    moodboardUrl: '/images/pageants/miss-asia-pacific-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -849,7 +849,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-02-05T23:59:59.000Z'),
     compensation: 'National Sash + LKR 550,000 Travel & Preparation Allowance',
-    moodboardUrl: photo('photo-1758985402638-6028bae83b98'), // South Asian model with radiant eyes
+    moodboardUrl: '/images/pageants/miss-globe-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -867,7 +867,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-02-08T23:59:59.000Z'),
     compensation: 'Top Model Trophy + LKR 750,000 Commercial Contract',
-    moodboardUrl: photo('photo-1771654104010-1d50eb00a04f'), // South Asian high-fashion model
+    moodboardUrl: '/images/pageants/top-model-of-the-world-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -885,7 +885,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-02-12T23:59:59.000Z'),
     compensation: 'Eco Tiara + Egypt Finals Journey + LKR 500,000 Project Fund',
-    moodboardUrl: photo('photo-1778148046745-ebe12ab2c022'), // South Asian model with sunlit poise
+    moodboardUrl: '/images/pageants/miss-eco-international-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -903,7 +903,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-02-15T23:59:59.000Z'),
     compensation: 'Miss Teen Tiara + LKR 400,000 Educational Scholarship',
-    moodboardUrl: photo('photo-1650286549949-2cbcd1a25bad'), // Young South Asian model
+    moodboardUrl: '/images/pageants/miss-teen-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -921,7 +921,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-02-18T23:59:59.000Z'),
     compensation: 'Heritage Crown + LKR 500,000 Travel Endorsement Grant',
-    moodboardUrl: photo('photo-1609357605129-26f69add5d6e'), // Beautiful South Asian woman portrait
+    moodboardUrl: '/images/pageants/mrs-tourism-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -939,7 +939,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-02-22T23:59:59.000Z'),
     compensation: 'National Sash + Malaysia Finals Trip + LKR 450,000 Sponsorship',
-    moodboardUrl: photo('photo-1770748034186-6d6e5738cddf'), // South Asian model with sophisticated expression
+    moodboardUrl: '/images/pageants/miss-cosmopolitan-world-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -957,7 +957,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-02-28T23:59:59.000Z'),
     compensation: 'Derana Gold Crown + LKR 1,500,000 Brand Endorsements + Acting Contracts',
-    moodboardUrl: photo('photo-1597586124394-fbd6ef244026'), // South Asian beauty queen portrait
+    moodboardUrl: '/images/pageants/derana-miss-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -975,7 +975,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-03-05T23:59:59.000Z'),
     compensation: 'Siyatha Crown + LKR 1,000,000 Cash Prize + Media Host Contract',
-    moodboardUrl: photo('photo-1583391733956-3750e0ff4e8b'), // South Asian royal bride with ornate jewelry
+    moodboardUrl: '/images/pageants/siyatha-miss-world-sri-lanka.jpg',
     status: 'open',
   },
   {
@@ -993,7 +993,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-03-15T23:59:59.000Z'),
     compensation: 'Global Representation + $50,000 USD Delegate Wardrobe & Wardrobe Grants',
-    moodboardUrl: photo('photo-1607990281513-2c110a25bd8c'), // South Asian international queen on stage
+    moodboardUrl: '/images/pageants/miss-universe-global-finals.jpg',
     status: 'open',
   },
   {
@@ -1011,7 +1011,7 @@ const realCastings = [
     },
     applicationDeadline: new Date('2027-03-20T23:59:59.000Z'),
     compensation: 'Global Festival Delegate Honor + International Wardrobe Sponsorship',
-    moodboardUrl: photo('photo-1614252369475-531eba835eb1'), // South Asian festive pageant elegance
+    moodboardUrl: '/images/pageants/miss-world-global-festival.jpg',
     status: 'open',
   },
 ];

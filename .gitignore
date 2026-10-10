@@ -33,3 +33,8 @@ coverage/
 **/.agents/
 .claude/
 skills-lock.json
+
+# Local Source & Unprocessed Media
+New folder/
+**/New folder/
+
